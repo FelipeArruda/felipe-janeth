@@ -1,0 +1,23 @@
+﻿version: "3.9"
+
+services:
+  app:
+    build: .
+    image: felipe-janeth-app
+    ports:
+      - "5174:5174"
+    environment:
+      NODE_ENV: production
+      PORT: 5174
+      DATABASE_URL: ${DATABASE_URL}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      # Optional for SSL
+      # PGSSLMODE: require
+      # DATABASE_SSL: "true"
+    networks:
+      - shared
+
+networks:
+  shared:
+    external: true
+    name: ${COOLIFY_SHARED_NETWORK}
