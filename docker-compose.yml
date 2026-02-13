@@ -14,10 +14,3 @@ services:
       # Optional for SSL
       # PGSSLMODE: require
       # DATABASE_SSL: "true"
-    networks:
-      - shared
-
-networks:
-  shared:
-    external: true
-    name: ${COOLIFY_SHARED_NETWORK}
