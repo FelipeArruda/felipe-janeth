@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: felipe-janeth-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: felipe_janeth
+      POSTGRES_USER: felipe
+      POSTGRES_PASSWORD: felipe123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U felipe -d felipe_janeth"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: node:20-alpine
+    container_name: felipe-janeth-api
+    working_dir: /app
+    command: >
+      sh -c "if [ ! -d node_modules ] || [ -z \"$(ls -A node_modules 2>/dev/null)\" ];
+      then npm ci; fi && npm run dev:server"
+    environment:
+      NODE_ENV: development
+      PORT: 5174
+      DATABASE_URL: postgresql://felipe:felipe123@postgres:5432/felipe_janeth
+      ADMIN_JWT_SECRET: dev-secret-change-me
+      ADMIN_EMAIL: admin@local
+      ADMIN_PASSWORD: admin123
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5174:5174"
+    volumes:
+      - ./:/app
+      - api_node_modules:/app/node_modules
+
+  app:
+    image: node:20-alpine
+    container_name: felipe-janeth-app
+    working_dir: /app
+    command: >
+      sh -c "if [ ! -d node_modules ] || [ -z \"$(ls -A node_modules 2>/dev/null)\" ];
+      then npm ci; fi && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_URL: http://localhost:5174
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - app_node_modules:/app/node_modules
+
+volumes:
+  postgres_data:
+  api_node_modules:
+  app_node_modules:

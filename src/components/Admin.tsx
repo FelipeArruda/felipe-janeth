@@ -23,7 +23,7 @@ interface FamilyMember {
 interface MemberConfirmation {
   id: number;
   member_id: number;
-  attending: number;
+  attending: boolean;
   dietary_restrictions: string | null;
   message: string | null;
   confirmed_at: string;
@@ -173,7 +173,7 @@ export default function Admin({ onExit }: AdminProps) {
       const confirmation = confirmationMap[member.id];
       if (!confirmation) {
         pending += 1;
-      } else if (confirmation.attending === 1) {
+      } else if (confirmation.attending) {
         attendingYes += 1;
       } else {
         attendingNo += 1;
@@ -214,11 +214,7 @@ export default function Admin({ onExit }: AdminProps) {
     members.forEach((member) => {
       const family = families.find((item) => item.id === member.family_id);
       const confirmation = confirmationMap[member.id];
-      const status = confirmation
-        ? confirmation.attending === 1
-          ? 'Sim'
-          : 'Nao'
-        : 'Pendente';
+      const status = confirmation ? (confirmation.attending ? 'Sim' : 'Nao') : 'Pendente';
       rows.push([
         family?.family_name ?? '',
         family?.phone ?? '',
@@ -773,15 +769,15 @@ export default function Admin({ onExit }: AdminProps) {
                       {(memberMap[family.id] || []).map((member) => {
                         const confirmation = confirmationMap[member.id];
                         const attending =
-                          confirmation?.attending === 1
+                          confirmation?.attending
                             ? 'Confirmado'
-                            : confirmation?.attending === 0
+                            : confirmation
                             ? 'Não irá'
                             : 'Sem resposta';
                         const badgeClass =
-                          confirmation?.attending === 1
+                          confirmation?.attending
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : confirmation?.attending === 0
+                            : confirmation
                             ? 'bg-rose-50 text-rose-700 border-rose-200'
                             : 'bg-gray-50 text-gray-600 border-gray-200';
 

@@ -14,6 +14,8 @@ const app = express();
 const PORT = process.env.PORT || 5174;
 const JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'dev-secret-change-me';
 const DATABASE_URL = process.env.DATABASE_URL;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const USE_SSL =
   process.env.PGSSLMODE === 'require' ||
   process.env.PGSSL === 'true' ||
@@ -91,6 +93,20 @@ const generateAccessCode = () => {
 const issueToken = (email) =>
   jwt.sign({ email }, JWT_SECRET, { expiresIn: '7d' });
 
+const ensureAdminUser = async () => {
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    return;
+  }
+
+  const passwordHash = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+  await pool.query(
+    `INSERT INTO admin_users (email, password_hash)
+     VALUES ($1, $2)
+     ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
+    [ADMIN_EMAIL, passwordHash]
+  );
+};
+
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
   const token = authHeader.startsWith('Bearer ')
@@ -112,6 +128,7 @@ const authMiddleware = (req, res, next) => {
 
 const start = async () => {
   await initDatabase();
+  await ensureAdminUser();
 
   app.get('/api/health', (_req, res) => {
     res.json({ ok: true });
