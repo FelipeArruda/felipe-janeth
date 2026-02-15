@@ -1,38 +1,50 @@
-import { Briefcase, BookOpen, Heart, Baby } from 'lucide-react';
+﻿import { Briefcase, Heart, Baby } from 'lucide-react';
+
+type Milestone = {
+  icon: typeof Heart;
+  title: string;
+  date: string;
+  description: string;
+  color: string;
+};
 
 export default function Timeline() {
-  const milestones = [
+  const milestones: Milestone[] = [
     {
       icon: Heart,
-      title: "Primeiro Match",
-      description: "Nos conhecemos no Tinder e descobrimos uma conexão especial",
-      color: "bg-rose-500"
+      title: 'Primeiro Match',
+      date: 'Junho de 2021',
+      description: 'Nos conhecemos no Tinder e descobrimos uma conexao especial',
+      color: 'bg-rose-500',
     },
     {
       icon: Briefcase,
-      title: "Carreiras",
-      description: "Felipe como Engenheiro de Dados e Janeth como Professora de Português",
-      color: "bg-amber-500"
+      title: 'Carreiras',
+      date: '2023',
+      description: 'Felipe como Engenheiro de Dados e Janeth como Professora de Portugues',
+      color: 'bg-amber-500',
     },
     {
       icon: Heart,
-      title: "Família Cresceu",
-      description: "Minnie, nossa cachorrinha, se juntou à família",
-      color: "bg-pink-500"
+      title: 'Familia Cresceu',
+      date: '2024',
+      description: 'Minnie, nossa cachorrinha, se juntou a familia',
+      color: 'bg-pink-500',
     },
     {
       icon: Baby,
-      title: "Benício a Caminho",
-      description: "Esperando nosso primeiro filho, que chegará em breve",
-      color: "bg-blue-500"
-    }
+      title: 'Benicio a Caminho',
+      date: '2026',
+      description: 'Esperando nosso primeiro filho, que chegara em breve',
+      color: 'bg-blue-500',
+    },
   ];
 
   return (
     <section className="py-20 px-4 bg-gradient-to-b from-white to-rose-50">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-5xl md:text-6xl text-gray-800 mb-4">Marcos da Nossa Jornada</h2>
+          <h2 className="font-serif text-5xl md:text-6xl text-gray-800 mb-4">Nossa Jornada</h2>
           <div className="w-24 h-1 bg-rose-400 mx-auto"></div>
         </div>
 
@@ -47,6 +59,9 @@ export default function Timeline() {
               <div key={index} className={`relative mb-12 ${isEven ? 'md:pr-1/2' : 'md:pl-1/2'}`}>
                 <div className={`md:w-1/2 ${isEven ? 'md:ml-auto md:pl-12' : 'md:mr-auto md:pr-12'}`}>
                   <div className="bg-white rounded-xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-500 mb-3">
+                      {milestone.date}
+                    </p>
                     <div className={`${milestone.color} w-12 h-12 rounded-full flex items-center justify-center mb-4`}>
                       <Icon className="w-6 h-6 text-white" />
                     </div>

@@ -38,7 +38,7 @@ export default function Story() {
         <div className="order-1 md:order-2">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl">
             <img
-              src="https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=800"
+              src="/casal1.png"
               alt="Casal"
               className="w-full h-[500px] object-cover"
             />

@@ -3,53 +3,18 @@ import { Heart } from 'lucide-react';
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <style>{`
-        @keyframes hero-reveal {
-          0% {
-            clip-path: inset(0 0 0 0);
-          }
-          100% {
-            clip-path: inset(0 0 0 100%);
-          }
-        }
-
-        .hero-reveal {
-          animation: hero-reveal 2.6s ease-in-out forwards;
-          animation-delay: 0.1s;
-          will-change: clip-path;
-        }
-
-        .hero-content {
-          opacity: 0;
-          animation: hero-content-fade 1.2s ease-out forwards;
-          animation-delay: 1.2s;
-        }
-
-        @keyframes hero-content-fade {
-          from {
-            opacity: 0;
-            transform: translateY(6px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: 'url(/IMG_1450.JPG)',
+          backgroundImage: 'url(/paris1.jpeg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 60%',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
-        <div className="absolute inset-0 bg-slate-950/35 hero-reveal"></div>
+        <div className="absolute inset-0 bg-black/15"></div>
       </div>
 
-      <div className="relative z-10 text-center text-white px-4 hero-content">
+      <div className="relative z-10 text-center text-white px-4">
         <div className="mb-8 flex justify-center">
           <Heart className="w-16 h-16 fill-rose-400 text-rose-400 animate-pulse" />
         </div>

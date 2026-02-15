@@ -16,9 +16,9 @@ export default function Family() {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
             <div className="relative h-64">
               <img
-                src="https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src="/minie.jpeg"
                 alt="Dog"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-[center_70%]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               <div className="absolute top-4 right-4 bg-white rounded-full p-3">

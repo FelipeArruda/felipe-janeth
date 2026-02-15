@@ -1,10 +1,13 @@
-import { Calendar, MapPin, Clock } from 'lucide-react';
+﻿import { Calendar, MapPin, Clock } from 'lucide-react';
 
 interface SaveTheDateProps {
   onRSVPClick: () => void;
 }
 
 export default function SaveTheDate({ onRSVPClick }: SaveTheDateProps) {
+  const mapsUrl =
+    'https://www.google.com/maps/search/?api=1&query=Ladeira+Alexandre+Leonel,+221+-+Loja+102+-+Sao+Mateus,+Juiz+de+Fora+-+MG,+36033-240';
+
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-rose-500 to-rose-600 text-white">
       <div className="max-w-4xl mx-auto text-center">
@@ -15,7 +18,7 @@ export default function SaveTheDate({ onRSVPClick }: SaveTheDateProps) {
         </div>
 
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 mb-8">
-          <p className="text-6xl md:text-8xl font-serif mb-4">27</p>
+          <p className="text-6xl md:text-8xl font-serif mb-4">24</p>
           <p className="text-3xl md:text-4xl font-light mb-2">Abril</p>
           <p className="text-3xl md:text-4xl font-light">2026</p>
         </div>
@@ -24,13 +27,20 @@ export default function SaveTheDate({ onRSVPClick }: SaveTheDateProps) {
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
             <Clock className="w-8 h-8 mx-auto mb-3 text-rose-100" />
             <h3 className="font-serif text-2xl mb-2">Horário</h3>
-            <p className="text-lg text-rose-100">Em breve</p>
+            <p className="text-lg text-rose-100">18h às 21h</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
             <MapPin className="w-8 h-8 mx-auto mb-3 text-rose-100" />
             <h3 className="font-serif text-2xl mb-2">Local</h3>
-            <p className="text-lg text-rose-100">Em breve</p>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-block text-lg text-rose-100 underline underline-offset-4 hover:text-white"
+            >
+              Lourdes Square Spazio
+            </a>
           </div>
         </div>
 
