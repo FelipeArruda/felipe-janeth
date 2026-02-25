@@ -1,5 +1,3 @@
-import { Heart } from 'lucide-react';
-
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -15,12 +13,10 @@ export default function Hero() {
       </div>
 
       <div className="relative z-10 text-center text-white px-4">
-        <div className="mb-8 flex justify-center">
-          <Heart className="w-16 h-16 fill-rose-400 text-rose-400 animate-pulse" />
-        </div>
-
-        <h1 className="font-serif text-6xl md:text-8xl mb-4 tracking-wide">
-          Felipe <span className="text-rose-400">&</span> Janeth
+        <h1 className="font-serif text-6xl md:text-8xl mb-4 tracking-wide leading-none md:leading-tight">
+          <span className="block md:inline">Felipe</span>{' '}
+          <span className="block md:inline text-rose-400">&</span>{' '}
+          <span className="block md:inline">Janeth</span>
         </h1>
 
         <div className="w-32 h-1 bg-rose-400 mx-auto mb-6"></div>
@@ -30,7 +26,7 @@ export default function Hero() {
         </p>
 
         <p className="text-xl md:text-2xl font-light">
-          27 de Abril de 2026
+          24 de Abril de 2026
         </p>
       </div>
 

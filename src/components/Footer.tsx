@@ -9,7 +9,7 @@ export default function Footer() {
         </div>
 
         <h3 className="font-serif text-3xl mb-2">Felipe & Janeth</h3>
-        <p className="text-gray-400 mb-6">27 de Abril de 2026</p>
+        <p className="text-gray-400 mb-6">24 de Abril de 2026</p>
 
         <div className="w-32 h-px bg-gray-700 mx-auto mb-6"></div>
 
