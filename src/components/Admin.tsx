@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState, FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, FormEvent } from 'react';
 import { Key, LogOut, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
@@ -56,67 +56,167 @@ const BoardingPassInvite = ({ family }: { family: Family }) => {
       : family.access_code;
 
   return (
-    <div className="relative w-[900px] h-[600px] rounded-[28px] bg-[#fbf7f2] border border-rose-100 shadow-none overflow-hidden">
-      <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-rose-100/60 blur-3xl" />
-      <div className="absolute -bottom-28 -right-28 h-72 w-72 rounded-full bg-amber-100/50 blur-3xl" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.8)_0,rgba(255,255,255,0.4)_35%,transparent_60%)] opacity-60" />
+    <div className="relative w-[1200px] h-[800px] bg-white overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-rose-50/30" />
 
-      <div className="absolute inset-x-12 top-12 border border-rose-100/80 rounded-[22px] h-[520px] bg-white/80 backdrop-blur-sm shadow-none" />
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-rose-400 via-rose-300 to-amber-200" />
+      <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-200 via-rose-300 to-rose-400" />
 
-      <div className="absolute inset-x-24 top-20 text-center">
-        <div className="text-[11px] uppercase tracking-[0.4em] text-rose-400">
-          Convite de Casamento
-        </div>
-        <div className="mt-4 font-serif text-4xl text-gray-800">
-          {COUPLE_NAME}
-        </div>
-        <div className="mt-2 text-sm text-gray-500">{family.family_name}</div>
-        <div className="mt-4 text-sm text-gray-500 uppercase tracking-[0.2em]">
-          com amor, convidamos você para celebrar conosco
-        </div>
+      <div className="absolute top-0 left-0 bottom-0 w-2 bg-gradient-to-b from-rose-400 via-rose-300 to-amber-200" />
+      <div className="absolute top-0 right-0 bottom-0 w-2 bg-gradient-to-b from-amber-200 via-rose-300 to-rose-400" />
+
+      <div className="absolute top-[72px] left-[72px] right-[72px]">
+        <svg width="100%" height="2" className="opacity-20">
+          <line x1="0" y1="1" x2="100%" y2="1" stroke="#9ca3af" strokeWidth="2" strokeDasharray="8,8" />
+        </svg>
+      </div>
+      <div className="absolute bottom-[72px] left-[72px] right-[72px]">
+        <svg width="100%" height="2" className="opacity-20">
+          <line x1="0" y1="1" x2="100%" y2="1" stroke="#9ca3af" strokeWidth="2" strokeDasharray="8,8" />
+        </svg>
       </div>
 
-      <div className="absolute left-24 top-[220px] right-24 flex items-center justify-center gap-6">
-        <div className="h-px flex-1 bg-rose-200/70" />
-        <div className="text-rose-400 text-sm uppercase tracking-[0.35em]">Save the Date</div>
-        <div className="h-px flex-1 bg-rose-200/70" />
-      </div>
-
-      <div className="absolute left-24 top-[270px] right-24 grid grid-cols-3 gap-6 text-center">
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Data</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_DATE}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Hora</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_TIME}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Local</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_LOCATION}</p>
-        </div>
-      </div>
-
-      <div className="absolute left-24 right-24 top-[360px] grid grid-cols-3 gap-6">
-        <div />
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 px-4 py-5 flex flex-col items-center justify-center gap-3 text-center">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-rose-400">
-            Confirme sua presença
+      <div className="relative h-full flex flex-col items-center justify-between py-24 px-20">
+        <div className="text-center space-y-6 w-full">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="h-px w-20 bg-gradient-to-r from-transparent to-rose-300" />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-rose-400">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
+            </svg>
+            <div className="h-px w-20 bg-gradient-to-l from-transparent to-rose-300" />
           </div>
-          <QRCodeSVG
-            value={inviteUrl}
-            size={72}
-            bgColor="transparent"
-            fgColor="#1f2937"
-            level="M"
-            includeMargin={false}
-          />
-          <div className="text-xs font-semibold text-gray-700">
-            {formatAccessCode(family.access_code)}
+
+          <div className="space-y-1">
+            <p className="text-[13px] uppercase tracking-[0.4em] text-rose-400 font-medium">
+              Convite de Casamento
+            </p>
+            <h1 className="font-serif text-7xl text-gray-800 tracking-tight mt-6">
+              Felipe <span className="text-rose-400 font-light">&</span> Janeth
+            </h1>
+          </div>
+
+          <div className="pt-4">
+            <p className="text-base text-gray-600 font-light tracking-wide">
+              {family.family_name}
+            </p>
+          </div>
+
+          <div className="pt-6 pb-4">
+            <p className="text-base text-gray-700 leading-relaxed max-w-2xl mx-auto font-light">
+              Com alegria no coração, convidamos você para celebrar
+              <br />
+              <span className="font-normal">o nosso amor e união em matrimônio</span>
+            </p>
           </div>
         </div>
-        <div />
+
+        <div className="w-full space-y-10">
+          <div className="flex items-center justify-center gap-8">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-rose-200 to-rose-300" />
+            <div className="flex items-center gap-2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-rose-400">
+                <rect x="3" y="6" width="18" height="15" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M3 10h18" stroke="currentColor" strokeWidth="2"/>
+                <path d="M8 3v6M16 3v6" stroke="currentColor" strokeWidth="2"/>
+              </svg>
+              <span className="text-xs uppercase tracking-[0.35em] text-rose-500 font-semibold">
+                Save the Date
+              </span>
+            </div>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent via-rose-200 to-rose-300" />
+          </div>
+
+          <div className="grid grid-cols-3 gap-10 max-w-4xl mx-auto">
+            <div className="text-center space-y-4 bg-white/60 backdrop-blur-sm rounded-xl p-8 border border-gray-100 shadow-sm">
+              <div className="space-y-1">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-rose-400 font-semibold">
+                  Data
+                </p>
+                <div className="h-px w-12 bg-rose-200 mx-auto" />
+              </div>
+              <div className="font-serif text-3xl text-gray-800 leading-tight">
+                27
+                <div className="text-lg font-light text-gray-600 mt-1">Abril</div>
+                <div className="text-base font-light text-gray-500">2026</div>
+              </div>
+            </div>
+
+            <div className="text-center space-y-4 bg-white/60 backdrop-blur-sm rounded-xl p-8 border border-gray-100 shadow-sm">
+              <div className="space-y-1">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-rose-400 font-semibold">
+                  Horário
+                </p>
+                <div className="h-px w-12 bg-rose-200 mx-auto" />
+              </div>
+              <div className="font-serif text-3xl text-gray-800 leading-tight">
+                18h
+                <div className="text-base font-light text-gray-500 mt-2">Cerimônia e Recepção</div>
+              </div>
+            </div>
+
+            <div className="text-center space-y-4 bg-white/60 backdrop-blur-sm rounded-xl p-8 border border-gray-100 shadow-sm">
+              <div className="space-y-1">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-rose-400 font-semibold">
+                  Local
+                </p>
+                <div className="h-px w-12 bg-rose-200 mx-auto" />
+              </div>
+              <div className="text-xl font-serif text-gray-800 leading-tight">
+                Lourdes Square
+                <div className="text-sm font-light text-gray-500 mt-2">Spazio</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-4">
+            <div className="bg-gradient-to-br from-white via-white to-rose-50/30 rounded-2xl p-8 border-2 border-rose-100 shadow-lg">
+              <div className="text-center space-y-5">
+                <div className="space-y-2">
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-rose-500 font-semibold">
+                    Confirme sua Presença
+                  </p>
+                  <div className="h-px w-20 bg-rose-200 mx-auto" />
+                </div>
+
+                <div className="flex items-center justify-center">
+                  <div className="bg-white p-4 rounded-xl shadow-inner border border-gray-100">
+                    <QRCodeSVG
+                      value={inviteUrl}
+                      size={100}
+                      bgColor="#ffffff"
+                      fgColor="#1f2937"
+                      level="H"
+                      includeMargin={false}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 font-light">Código de Acesso</p>
+                  <p className="font-mono text-xl tracking-[0.3em] text-gray-800 font-semibold">
+                    {formatAccessCode(family.access_code)}
+                  </p>
+                </div>
+
+                <p className="text-[10px] text-gray-400 max-w-xs mx-auto leading-relaxed font-light pt-2">
+                  Escaneie o QR Code ou utilize o código para confirmar sua presença através do site
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center space-y-2 pt-6">
+          <p className="text-sm text-gray-500 font-light italic">
+            Contamos com a sua presença para tornar este dia ainda mais especial
+          </p>
+        </div>
       </div>
+
+      <div className="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-rose-200/40" />
+      <div className="absolute top-8 right-8 w-8 h-8 border-t-2 border-r-2 border-rose-200/40" />
+      <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-rose-200/40" />
+      <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-rose-200/40" />
     </div>
   );
 };
