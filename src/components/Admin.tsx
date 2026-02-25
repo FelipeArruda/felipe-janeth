@@ -78,20 +78,14 @@ const BoardingPassInvite = ({ family }: { family: Family }) => {
 
       <div className="relative h-full flex flex-col items-center justify-between py-24 px-20">
         <div className="text-center space-y-6 w-full">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-rose-300" />
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-rose-400">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/>
-            </svg>
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-rose-300" />
-          </div>
-
           <div className="space-y-1">
             <p className="text-[13px] uppercase tracking-[0.4em] text-rose-400 font-medium">
               Convite de Casamento
             </p>
-            <h1 className="font-serif text-7xl text-gray-800 tracking-tight mt-6">
-              Felipe <span className="text-rose-400 font-light">&</span> Janeth
+            <h1 className="font-serif text-7xl text-gray-800 tracking-tight mt-6 leading-tight">
+              <div>Felipe</div>
+              <span className="text-rose-400 font-light text-6xl">&</span>
+              <div>Janeth</div>
             </h1>
           </div>
 
