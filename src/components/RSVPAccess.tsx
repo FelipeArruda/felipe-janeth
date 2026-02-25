@@ -115,12 +115,6 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
           </button>
         </form>
 
-        <p className="text-center text-sm text-gray-500 mt-8">
-          Não recebeu um convite?{' '}
-          <span className="text-rose-400 font-medium">
-            Entre em contato conosco
-          </span>
-        </p>
       </div>
     </section>
   );
