@@ -13,28 +13,60 @@ interface MemberConfirmation {
   attending: boolean;
 }
 
+interface ExistingConfirmation {
+  member_id: number;
+  attending: boolean;
+  message: string | null;
+}
+
 interface RSVPFormProps {
   familyId: string;
   familyName: string;
   members: FamilyMember[];
+  initialConfirmations: ExistingConfirmation[];
   onBack: () => void;
 }
 
-export default function RSVP({ familyId, familyName, members, onBack }: RSVPFormProps) {
-  const [confirmations, setConfirmations] = useState<Record<string, MemberConfirmation>>(
-    members.reduce((acc, member) => ({
-      ...acc,
-      [member.id]: {
-        memberId: member.id,
+export default function RSVP({
+  familyId,
+  familyName,
+  members,
+  initialConfirmations,
+  onBack,
+}: RSVPFormProps) {
+  const getInitialConfirmations = (): Record<string, MemberConfirmation> => {
+    const defaults = members.reduce<Record<string, MemberConfirmation>>((acc, member) => {
+      const key = String(member.id);
+      acc[key] = {
+        memberId: key,
         attending: true,
-      },
-    }), {})
+      };
+      return acc;
+    }, {});
+
+    initialConfirmations.forEach((confirmation) => {
+      const key = String(confirmation.member_id);
+      if (defaults[key]) {
+        defaults[key] = {
+          memberId: key,
+          attending: !!confirmation.attending,
+        };
+      }
+    });
+
+    return defaults;
+  };
+
+  const [confirmations, setConfirmations] = useState<Record<string, MemberConfirmation>>(
+    getInitialConfirmations()
   );
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
-  const [familyMessage, setFamilyMessage] = useState('');
+  const [familyMessage, setFamilyMessage] = useState(
+    initialConfirmations.find((confirmation) => confirmation.message)?.message || ''
+  );
 
   const handleMemberChange = (memberId: string, field: string, value: any) => {
     setConfirmations((prev) => ({
@@ -142,9 +174,7 @@ export default function RSVP({ familyId, familyName, members, onBack }: RSVPForm
                         type="radio"
                         name={`attending-${member.id}`}
                         checked={confirmations[member.id]?.attending === true}
-                        onChange={(e) =>
-                          handleMemberChange(member.id, 'attending', e.target.checked)
-                        }
+                        onChange={() => handleMemberChange(member.id, 'attending', true)}
                         className="sr-only"
                       />
                       <span
@@ -162,13 +192,7 @@ export default function RSVP({ familyId, familyName, members, onBack }: RSVPForm
                         type="radio"
                         name={`attending-${member.id}`}
                         checked={confirmations[member.id]?.attending === false}
-                        onChange={(e) =>
-                          handleMemberChange(
-                            member.id,
-                            'attending',
-                            !e.target.checked
-                          )
-                        }
+                        onChange={() => handleMemberChange(member.id, 'attending', false)}
                         className="sr-only"
                       />
                       <span

@@ -307,7 +307,20 @@ const start = async () => {
       [family.id]
     );
 
-    return res.json({ family, members: members.rows });
+    const confirmations = await pool.query(
+      `SELECT DISTINCT ON (mc.member_id) mc.*
+       FROM member_confirmations mc
+       INNER JOIN family_members fm ON fm.id = mc.member_id
+       WHERE fm.family_id = $1
+       ORDER BY mc.member_id, mc.confirmed_at DESC, mc.id DESC`,
+      [family.id]
+    );
+
+    return res.json({
+      family,
+      members: members.rows,
+      confirmations: confirmations.rows,
+    });
   });
 
   app.post('/api/confirmations', async (req, res) => {
@@ -357,3 +370,4 @@ const start = async () => {
 };
 
 start();
+

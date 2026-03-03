@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useRef, useState, FormEvent } from 'react';
-import { Key, LogOut, Pencil, Plus, Trash2, UserPlus } from 'lucide-react';
+import { Key, LogOut, Pencil, Plus, Printer, Trash2, UserPlus } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
 import { adminApi, publicApi } from '../lib/api';
@@ -48,6 +48,14 @@ const formatAccessCode = (value: string) => {
   if (cleaned.length <= 4) return cleaned;
   return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 8)}`;
 };
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 
 const BoardingPassInvite = ({ family }: { family: Family }) => {
   const inviteUrl =
@@ -189,6 +197,50 @@ export default function Admin({ onExit }: AdminProps) {
     };
   }, [families.length, members, confirmationMap]);
 
+  const familyMessages = useMemo(() => {
+    return families
+      .map((family) => {
+        const familyMembers = memberMap[family.id] || [];
+        const memberIds = new Set(familyMembers.map((member) => member.id));
+        const withMessage = confirmations
+          .filter(
+            (confirmation) =>
+              memberIds.has(confirmation.member_id) &&
+              typeof confirmation.message === 'string' &&
+              confirmation.message.trim().length > 0
+          )
+          .sort((a, b) => {
+            const dateDiff =
+              new Date(b.confirmed_at).getTime() - new Date(a.confirmed_at).getTime();
+            if (dateDiff !== 0) return dateDiff;
+            return b.id - a.id;
+          });
+
+        if (withMessage.length === 0) return null;
+
+        const latestMessage = withMessage[0];
+        const attendingYes = familyMembers.filter(
+          (member) => confirmationMap[member.id]?.attending === true
+        ).length;
+        const attendingNo = familyMembers.filter(
+          (member) => confirmationMap[member.id]?.attending === false
+        ).length;
+
+        return {
+          familyName: family.family_name,
+          message: latestMessage.message || '',
+          confirmedAt: latestMessage.confirmed_at,
+          attendingYes,
+          attendingNo,
+        };
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .sort(
+        (a, b) =>
+          new Date(b.confirmedAt).getTime() - new Date(a.confirmedAt).getTime()
+      );
+  }, [families, memberMap, confirmations, confirmationMap]);
+
   const handleExportCsv = () => {
     const escapeCsv = (value: string | number | null | undefined) => {
       if (value === null || value === undefined) return '';
@@ -234,6 +286,226 @@ export default function Admin({ onExit }: AdminProps) {
     link.download = 'lista-convidados.csv';
     link.click();
     URL.revokeObjectURL(url);
+  };
+
+      const handlePrintMessages = () => {
+    if (familyMessages.length === 0) {
+      setFormError('Nenhuma mensagem enviada ainda para impressão.');
+      return;
+    }
+
+    const printWindow = window.open('', '_blank', 'width=1200,height=900');
+    if (!printWindow) {
+      setFormError('Não foi possível abrir a janela de impressão.');
+      return;
+    }
+
+    const cardsHtml = familyMessages
+      .map((item) => {
+        return `
+          <section class="print-sheet">
+            <article class="scene">
+              <div class="twine twine-main"></div>
+              <div class="twine twine-loop"></div>
+
+              <div class="kraft-tag">
+                <div class="tag-hole"></div>
+                <div class="tag-grain"></div>
+
+                <header>
+                  <h1>${escapeHtml(item.familyName)}</h1>
+                </header>
+
+                <blockquote>${escapeHtml(item.message)}</blockquote>
+
+                <footer>
+                  <span>${escapeHtml(WEDDING_DATE)}</span>
+                  <span><strong>Janeth &amp; Felipe</strong></span>
+                </footer>
+              </div>
+            </article>
+          </section>
+        `;
+      })
+      .join('');
+
+    printWindow.document.write(`
+      <!doctype html>
+      <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Mensagens das Famílias</title>
+          <style>
+            @page { size: A4; margin: 14mm; }
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              background: #f5f2ed;
+              color: #2a2622;
+            }
+            .page { padding: 6px; }
+            .print-sheet {
+              width: 100%;
+              min-height: calc(297mm - 28mm);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              page-break-after: always;
+            }
+            .print-sheet:last-of-type { page-break-after: auto; }
+
+            .scene {
+              position: relative;
+              width: 182mm;
+              min-height: 120mm;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .twine {
+              position: absolute;
+              background: #c6ab86;
+              z-index: 0;
+            }
+            .twine-main {
+              width: 84mm;
+              height: 2px;
+              left: 18mm;
+              top: 48mm;
+              transform: rotate(-14deg);
+            }
+            .twine-loop {
+              width: 16mm;
+              height: 16mm;
+              border: 2px solid #c6ab86;
+              border-radius: 50%;
+              border-top-color: transparent;
+              border-right-color: transparent;
+              left: 9mm;
+              top: 42mm;
+              background: transparent;
+              transform: rotate(-8deg);
+            }
+
+            .kraft-tag {
+              position: relative;
+              width: 154mm;
+              min-height: 76mm;
+              margin-left: 12mm;
+              transform: none;
+              background: #d8be95;
+              border: 1px solid #b99a6f;
+              box-shadow: 0 14px 30px rgba(64, 49, 33, 0.2);
+              padding: 12mm 11mm 8mm 16mm;
+              overflow: hidden;
+              z-index: 1;
+            }
+
+            .tag-hole {
+              position: absolute;
+              left: 50%;
+              top: 4.5mm;
+              width: 4.5mm;
+              height: 4.5mm;
+              margin-left: -2.25mm;
+              border-radius: 50%;
+              background: #eee9e1;
+              border: 1px solid #a6885e;
+              box-shadow: inset 0 0 0 1px rgba(120, 96, 62, 0.15);
+            }
+
+            .tag-grain {
+              position: absolute;
+              inset: 0;
+              background-image:
+                radial-gradient(rgba(92, 70, 39, 0.18) 0.55px, transparent 0.75px),
+                radial-gradient(rgba(107, 82, 46, 0.12) 0.45px, transparent 0.7px),
+                repeating-linear-gradient(
+                  12deg,
+                  rgba(101, 79, 48, 0.04) 0px,
+                  rgba(101, 79, 48, 0.04) 1px,
+                  transparent 1px,
+                  transparent 4px
+                ),
+                linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(120, 94, 56, 0.08));
+              background-size: 5px 5px, 8px 8px, 100% 100%, 100% 100%;
+              background-position: 0 0, 2px 3px, 0 0, 0 0;
+              pointer-events: none;
+              z-index: -1;
+            }
+
+            h1 {
+              margin: 0;
+              text-align: center;
+              font: 400 52px/1 "Brush Script MT", "Segoe Script", cursive;
+              color: #2f251c;
+            }
+
+            blockquote {
+              margin: 5mm 0 0;
+              border: 0;
+              padding: 0;
+              text-align: center;
+              white-space: pre-wrap;
+              font: 400 29px/1.28 "Brush Script MT", "Segoe Script", "Times New Roman", cursive;
+              color: #3d3329;
+            }
+
+            footer {
+              margin-top: 7mm;
+              border-top: 1px solid rgba(103, 80, 51, 0.3);
+              padding-top: 2.5mm;
+              display: flex;
+              justify-content: space-between;
+              flex-wrap: wrap;
+              gap: 6px 12px;
+              font: 600 10px/1.2 "Arial", sans-serif;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+              color: #5b4d3f;
+            }
+
+            .actions {
+              position: sticky;
+              bottom: 0;
+              background: linear-gradient(to top, rgba(245, 242, 237, 0.98), rgba(245, 242, 237, 0));
+              padding: 14px 8px 8px;
+              display: flex;
+              justify-content: flex-end;
+              gap: 8px;
+            }
+            button {
+              border: 0;
+              border-radius: 8px;
+              padding: 10px 14px;
+              font: 600 13px/1 "Arial", sans-serif;
+              cursor: pointer;
+            }
+            .print-btn { background: #e11d48; color: #fff; }
+            .close-btn { background: #e5e7eb; color: #111827; }
+
+            @media print {
+              body { background: #fff; }
+              .page { padding: 0; }
+              .actions { display: none; }
+              .kraft-tag { box-shadow: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <main class="page">
+            ${cardsHtml}
+            <div class="actions">
+              <button class="close-btn" onclick="window.close()">Fechar</button>
+              <button class="print-btn" onclick="window.print()">Imprimir</button>
+            </div>
+          </main>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const loadData = async () => {
@@ -620,6 +892,13 @@ export default function Admin({ onExit }: AdminProps) {
                 >
                   Exportar lista (CSV)
                 </button>
+                <button
+                  onClick={handlePrintMessages}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-rose-200 text-rose-600 font-semibold hover:bg-rose-50"
+                >
+                  <Printer className="w-4 h-4" />
+                  Imprimir mensagens
+                </button>
               </div>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -869,3 +1148,5 @@ export default function Admin({ onExit }: AdminProps) {
     </section>
   );
 }
+
+

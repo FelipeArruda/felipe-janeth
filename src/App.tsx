@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import Hero from './components/Hero';
 import Story from './components/Story';
 import Timeline from './components/Timeline';
@@ -17,6 +17,12 @@ interface FamilyMember {
   relationship: string | null;
 }
 
+interface ExistingConfirmation {
+  member_id: number;
+  attending: boolean;
+  message: string | null;
+}
+
 function App() {
   const [mode, setMode] = useState<'site' | 'admin'>(() =>
     window.location.hash === '#admin' ? 'admin' : 'site'
@@ -27,6 +33,7 @@ function App() {
     familyId?: string;
     familyName?: string;
     members?: FamilyMember[];
+    confirmations?: ExistingConfirmation[];
   }>({
     stage: 'landing',
   });
@@ -55,12 +62,18 @@ function App() {
     );
   }
 
-  const handleAccessGranted = (familyId: string, familyName: string, members: FamilyMember[]) => {
+  const handleAccessGranted = (
+    familyId: string,
+    familyName: string,
+    members: FamilyMember[],
+    confirmations: ExistingConfirmation[]
+  ) => {
     setRsvpState({
       stage: 'form',
       familyId,
       familyName,
       members,
+      confirmations,
     });
   };
 
@@ -75,6 +88,7 @@ function App() {
           familyId={rsvpState.familyId}
           familyName={rsvpState.familyName}
           members={rsvpState.members}
+          initialConfirmations={rsvpState.confirmations || []}
           onBack={handleBack}
         />
         <Footer />
@@ -109,3 +123,4 @@ function App() {
 }
 
 export default App;
+

@@ -9,13 +9,24 @@ interface Family {
 }
 
 interface FamilyMember {
-  id: number;
+  id: string;
   name: string;
   relationship: string | null;
 }
 
+interface ExistingConfirmation {
+  member_id: number;
+  attending: boolean;
+  message: string | null;
+}
+
 interface RSVPAccessProps {
-  onAccessGranted: (familyId: string, familyName: string, members: FamilyMember[]) => void;
+  onAccessGranted: (
+    familyId: string,
+    familyName: string,
+    members: FamilyMember[],
+    confirmations: ExistingConfirmation[]
+  ) => void;
   onBack: () => void;
 }
 
@@ -50,7 +61,16 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
       onAccessGranted(
         family.id.toString(),
         family.family_name,
-        (data.members || []) as FamilyMember[]
+        ((data.members || []) as Array<{
+          id: number;
+          name: string;
+          relationship: string | null;
+        }>).map((member) => ({
+          id: String(member.id),
+          name: member.name,
+          relationship: member.relationship,
+        })),
+        (data.confirmations || []) as ExistingConfirmation[]
       );
     } catch (err) {
       setError('Código de acesso inválido. Verifique e tente novamente.');
@@ -119,3 +139,4 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
     </section>
   );
 }
+
