@@ -1,32 +1,32 @@
-import { MapPin, Plane } from 'lucide-react';
+﻿import { MapPin, Plane } from 'lucide-react';
 
 export default function Travels() {
   const destinations = [
     {
-      name: "Ibitipoca, MG",
-      image: "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=800",
-      description: "Natureza e aventura"
+      name: 'Ibitipoca, MG',
+      image: '/ibiti.jpeg',
+      description: 'Natureza e aventura',
     },
     {
-      name: "Recife",
-      image: "https://images.pexels.com/photos/2412609/pexels-photo-2412609.jpeg?auto=compress&cs=tinysrgb&w=800",
-      description: "Praias paradisíacas"
+      name: 'Recife',
+      image: '/recife.jpeg',
+      description: 'Praias paradisíacas',
     },
     {
-      name: "Lisboa, Portugal",
-      image: "https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg?auto=compress&cs=tinysrgb&w=800",
-      description: "Charme europeu"
+      name: 'Lisboa, Portugal',
+      image: '/portugal.jpeg',
+      description: 'Charme europeu',
     },
     {
-      name: "Paris, França",
-      image: "https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=800",
-      description: "A cidade do amor"
+      name: 'Paris, França',
+      image: '/paris3.jpeg',
+      description: 'A cidade do amor',
     },
     {
-      name: "Curaçao",
-      image: "https://images.pexels.com/photos/1007657/pexels-photo-1007657.jpeg?auto=compress&cs=tinysrgb&w=800",
-      description: "Águas cristalinas"
-    }
+      name: 'Curaçao',
+      image: '/curacau.jpeg',
+      description: 'Águas cristalinas',
+    },
   ];
 
   return (

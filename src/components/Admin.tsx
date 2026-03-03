@@ -41,7 +41,7 @@ interface AdminProps {
 const WEDDING_DATE = '27 Abril 2026';
 const WEDDING_TIME = '18h';
 const WEDDING_LOCATION = 'Lourdes Square';
-const COUPLE_NAME = 'Felipe & Janeth';
+const COUPLE_NAME = 'Janeth & Felipe';
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);

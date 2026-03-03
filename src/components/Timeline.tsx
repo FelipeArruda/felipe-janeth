@@ -1,4 +1,4 @@
-﻿import { Briefcase, Heart, Baby } from 'lucide-react';
+﻿import { Briefcase, Heart, Baby, Home } from 'lucide-react';
 
 type Milestone = {
   icon: typeof Heart;
@@ -14,27 +14,27 @@ export default function Timeline() {
       icon: Heart,
       title: 'Primeiro Match',
       date: 'Junho de 2021',
-      description: 'Nos conhecemos no Tinder e descobrimos uma conexao especial',
+      description: 'Nos conhecemos na internet e descobrimos uma conexao especial',
       color: 'bg-rose-500',
     },
     {
       icon: Briefcase,
-      title: 'Carreiras',
-      date: '2023',
-      description: 'Felipe como Engenheiro de Dados e Janeth como Professora de Portugues',
+      title: 'Viagens',
+      date: '2022',
+      description: 'Descobrimos o mundo juntos, criando memórias inesquecíveis em cada destino',
       color: 'bg-amber-500',
     },
     {
-      icon: Heart,
-      title: 'Familia Cresceu',
-      date: '2024',
-      description: 'Minnie, nossa cachorrinha, se juntou a familia',
+      icon: Home,
+      title: 'Mudança',
+      date: '2023 - 2024',
+      description: 'Decidimos morar juntos, construindo um lar cheio de amor e alegria',
       color: 'bg-pink-500',
     },
     {
       icon: Baby,
-      title: 'Benicio a Caminho',
-      date: '2026',
+      title: 'Benício a caminho',
+      date: '2025 -2026',
       description: 'Esperando nosso primeiro filho, que chegara em breve',
       color: 'bg-blue-500',
     },

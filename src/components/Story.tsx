@@ -22,9 +22,7 @@ export default function Story() {
             </h3>
 
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
-              Tudo começou no Tinder, onde um simples "match" se transformou em algo muito mais especial.
-              Felipe, engenheiro de dados, e Janeth, professora de português, descobriram que tinham muito
-              mais em comum do que imaginavam.
+              Tudo começou com um simples "match" que se transformou em algo muito mais especial. 
             </p>
 
             <p className="text-gray-600 text-lg leading-relaxed">

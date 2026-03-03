@@ -8,7 +8,7 @@ export default function Footer() {
           <Heart className="w-8 h-8 text-rose-400 fill-rose-400 animate-pulse" />
         </div>
 
-        <h3 className="font-serif text-3xl mb-2">Felipe & Janeth</h3>
+        <h3 className="font-serif text-3xl mb-2">Janeth & Felipe</h3>
         <p className="text-gray-400 mb-6">24 de Abril de 2026</p>
 
         <div className="w-32 h-px bg-gray-700 mx-auto mb-6"></div>

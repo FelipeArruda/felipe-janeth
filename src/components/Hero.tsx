@@ -14,9 +14,9 @@ export default function Hero() {
 
       <div className="relative z-10 text-center text-white px-4">
         <h1 className="font-serif text-6xl md:text-8xl mb-4 tracking-wide leading-none md:leading-tight">
-          <span className="block md:inline">Felipe</span>{' '}
+          <span className="block md:inline">Janeth</span>{' '}
           <span className="block md:inline text-rose-400">&</span>{' '}
-          <span className="block md:inline">Janeth</span>
+          <span className="block md:inline">Felipe</span>
         </h1>
 
         <div className="w-32 h-1 bg-rose-400 mx-auto mb-6"></div>

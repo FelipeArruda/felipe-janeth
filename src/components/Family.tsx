@@ -37,7 +37,7 @@ export default function Family() {
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300">
             <div className="relative h-64 bg-gradient-to-br from-blue-100 to-blue-200">
               <img
-                src="https://images.pexels.com/photos/1912868/pexels-photo-1912868.jpeg?auto=compress&cs=tinysrgb&w=800"
+                src="/benicio.jpeg"
                 alt="Baby"
                 className="w-full h-full object-cover"
               />

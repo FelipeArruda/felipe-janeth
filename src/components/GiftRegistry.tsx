@@ -11,11 +11,7 @@ export default function GiftRegistry() {
           <Gift className="w-12 h-12 text-rose-400 mx-auto mb-4" />
           <h2 className="font-serif text-4xl md:text-5xl mb-4 text-gray-800">
             Lista de Presentes
-          </h2>
-          <p className="text-lg text-gray-600">
-            Ajude-nos a começar nossa jornada juntos! Acesse a lista completa na
-            Amazon.
-          </p>
+          </h2> 
         </div>
 
         <div className="flex justify-center">

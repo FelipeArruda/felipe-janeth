@@ -1,4 +1,4 @@
-# Felipe & Janeth
+# Janeth & Felipe
 
 Guia rapido para rodar o projeto localmente.
 
