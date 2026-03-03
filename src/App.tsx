@@ -91,7 +91,6 @@ function App() {
           initialConfirmations={rsvpState.confirmations || []}
           onBack={handleBack}
         />
-        <Footer />
       </div>
     );
   }
@@ -120,7 +119,6 @@ function App() {
         onAccessGranted={handleAccessGranted}
         onBack={handleBack}
       />
-      <Footer />
     </div>
   );
 }

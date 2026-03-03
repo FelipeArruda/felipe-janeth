@@ -1,5 +1,5 @@
 ﻿import { useState, FormEvent } from 'react';
-import { CheckCircle, ArrowLeft, Heart } from 'lucide-react';
+import { CheckCircle, Heart } from 'lucide-react';
 import { publicApi } from '../lib/api';
 
 interface FamilyMember {
@@ -102,7 +102,7 @@ export default function RSVP({
 
   if (submitted) {
     return (
-      <section className="py-20 px-4 bg-gradient-to-b from-white to-rose-50">
+      <section className="min-h-screen py-10 md:py-14 px-4 bg-gradient-to-b from-white to-rose-50 flex items-center">
         <div className="max-w-2xl mx-auto text-center">
           <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
           <h2 className="font-serif text-4xl mb-4 text-gray-800">
@@ -123,29 +123,21 @@ export default function RSVP({
   }
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-b from-white via-rose-50/60 to-white">
+    <section className="min-h-screen py-4 md:py-6 px-4 bg-gradient-to-b from-white via-rose-50/60 to-white">
       <div className="max-w-3xl mx-auto">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-rose-400 hover:text-rose-500 mb-10 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Voltar
-        </button>
-
-        <div className="text-center mb-12">
-          <div className="mx-auto w-20 h-20 rounded-full bg-rose-100 flex items-center justify-center mb-4 shadow-sm">
-            <Heart className="w-10 h-10 text-rose-400" />
+        <div className="text-center mb-5 md:mb-6">
+          <div className="mx-auto w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mb-3 shadow-sm">
+            <Heart className="w-8 h-8 text-rose-400" />
           </div>
-          <h2 className="font-serif text-4xl md:text-5xl mb-3 text-gray-800">
+          <h2 className="font-serif text-3xl md:text-4xl mb-2 text-gray-800">
             Bem-vindo, {familyName}!
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">
+          <p className="text-base text-gray-600 max-w-xl mx-auto">
             Estamos felizes por ter você com a gente. Confirme a presença de cada pessoa da família.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 md:p-10">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-5 md:p-6">
           {error && (
             <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
               {error}
@@ -156,11 +148,11 @@ export default function RSVP({
             {members.map((member) => (
               <div
                 key={member.id}
-                className="py-6 first:pt-0 last:pb-0"
+                className="py-4 first:pt-0 last:pb-0"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h3 className="font-serif text-2xl text-gray-800">
+                    <h3 className="font-serif text-xl md:text-2xl text-gray-800">
                       {member.name}
                     </h3>
                   </div>
@@ -208,28 +200,38 @@ export default function RSVP({
             ))}
           </div>
 
-          <div className="mt-8 rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
+          <div className="mt-4 rounded-2xl border border-rose-100 bg-white p-4 md:p-5 shadow-sm">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Mensagem da família (opcional)
             </label>
             <textarea
               value={familyMessage}
               onChange={(e) => setFamilyMessage(e.target.value)}
-              rows={3}
+              rows={2}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200 resize-none bg-white"
               placeholder="Conte-nos algo especial..."
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full mt-10 py-4 bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-          >
-            {loading ? 'Enviando...' : 'Confirmar Presença'}
-          </button>
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              className="w-full py-3 border border-gray-200 text-gray-600 font-semibold rounded-xl hover:border-rose-200 hover:text-rose-500 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold rounded-xl hover:from-rose-500 hover:to-pink-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            >
+              {loading ? 'Enviando...' : 'Confirmar Presença'}
+            </button>
+          </div>
         </form>
       </div>
     </section>
   );
 }
+

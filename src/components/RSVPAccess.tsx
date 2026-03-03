@@ -77,17 +77,17 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
   };
 
   return (
-    <section className="min-h-screen py-20 px-4 bg-gradient-to-b from-white to-rose-50 flex items-center">
+    <section className="min-h-screen py-8 md:py-12 px-4 bg-gradient-to-b from-white to-rose-50 flex items-center">
       <div className="max-w-md mx-auto w-full">
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-rose-400 hover:text-rose-500 mb-8 transition-colors"
+          className="flex items-center gap-2 text-rose-400 hover:text-rose-500 mb-6 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           Voltar ao site
         </button>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <Key className="w-12 h-12 text-rose-400 mx-auto mb-4" />
           <h1 className="font-serif text-4xl mb-4 text-gray-800">
             Confirme sua Presença
@@ -97,7 +97,7 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-8">
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 md:p-8">
           {error && (
             <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg flex items-start gap-3">
               <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
@@ -105,7 +105,7 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
             </div>
           )}
 
-          <div className="mb-8">
+          <div className="mb-6">
             <label className="block text-gray-700 font-medium mb-3">
               Código de Acesso
             </label>
