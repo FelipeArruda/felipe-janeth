@@ -24,6 +24,7 @@ interface ExistingConfirmation {
 }
 
 function App() {
+  const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
   const [mode, setMode] = useState<'site' | 'admin'>(() =>
     window.location.hash === '#admin' ? 'admin' : 'site'
   );
@@ -105,7 +106,10 @@ function App() {
         <Travels />
         <Family />
         <GiftRegistry />
-        <SaveTheDate onRSVPClick={() => setRsvpState({ stage: 'access' })} />
+        <SaveTheDate
+          onRSVPClick={() => setRsvpState({ stage: 'access' })}
+          rsvpDeadline={rsvpDeadline}
+        />
         <Footer />
       </div>
     );

@@ -2,11 +2,28 @@
 
 interface SaveTheDateProps {
   onRSVPClick: () => void;
+  rsvpDeadline?: string;
 }
 
-export default function SaveTheDate({ onRSVPClick }: SaveTheDateProps) {
+const parseDeadline = (value?: string): Date | null => {
+  if (!value) return null;
+
+  // If only the date is provided, keep the RSVP open until end of that day.
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T23:59:59.999`);
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+export default function SaveTheDate({ onRSVPClick, rsvpDeadline }: SaveTheDateProps) {
   const mapsUrl =
     'https://www.google.com/maps/search/?api=1&query=Ladeira+Alexandre+Leonel,+221+-+Loja+102+-+Sao+Mateus,+Juiz+de+Fora+-+MG,+36033-240';
+
+  const deadlineDate = parseDeadline(rsvpDeadline);
+  const isRSVPOpen = !deadlineDate || Date.now() <= deadlineDate.getTime();
 
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-rose-500 to-rose-600 text-white">
@@ -50,9 +67,10 @@ export default function SaveTheDate({ onRSVPClick }: SaveTheDateProps) {
           </p>
           <button
             onClick={onRSVPClick}
-            className="px-10 py-4 bg-white text-rose-500 font-semibold rounded-lg hover:bg-rose-50 transition-colors inline-block"
+            disabled={!isRSVPOpen}
+            className="px-10 py-4 bg-white text-rose-500 font-semibold rounded-lg hover:bg-rose-50 transition-colors inline-block disabled:bg-white/60 disabled:text-rose-200 disabled:cursor-not-allowed"
           >
-            Confirme Sua Presença
+            {isRSVPOpen ? 'Confirme Sua Presença' : 'Confirmações Encerradas'}
           </button>
         </div>
       </div>
