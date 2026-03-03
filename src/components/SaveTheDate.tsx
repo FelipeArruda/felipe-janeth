@@ -8,12 +8,15 @@ interface SaveTheDateProps {
 const parseDeadline = (value?: string): Date | null => {
   if (!value) return null;
 
-  // If only the date is provided, keep the RSVP open until end of that day.
+  // If only the date is provided, keep RSVP open until end of day in Brasilia time.
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return new Date(`${value}T23:59:59.999`);
+    return new Date(`${value}T23:59:59.999-03:00`);
   }
 
-  const parsed = new Date(value);
+  // If datetime is provided without timezone, assume Brasilia timezone.
+  const hasTimezone = /(Z|[+-]\d{2}:\d{2})$/.test(value);
+  const normalizedValue = hasTimezone ? value : `${value}-03:00`;
+  const parsed = new Date(normalizedValue);
   if (Number.isNaN(parsed.getTime())) return null;
   return parsed;
 };

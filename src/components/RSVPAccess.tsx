@@ -113,7 +113,10 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
               Código de Acesso
             </label>
             <input
-              type="text"
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="one-time-code"
               value={accessCode}
               onChange={handleChange}
               placeholder="XXXX-XXXX"
