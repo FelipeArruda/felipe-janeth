@@ -12,7 +12,6 @@
       - `id` (uuid, primary key)
       - `family_id` (uuid, foreign key to guest_families)
       - `name` (text, member name)
-      - `relationship` (text, optional - mother, father, brother, sister, cousin, etc.)
       - `created_at` (timestamp)
 
     - `member_confirmations`
@@ -47,7 +46,6 @@ CREATE TABLE IF NOT EXISTS family_members (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   family_id uuid NOT NULL REFERENCES guest_families(id) ON DELETE CASCADE,
   name text NOT NULL,
-  relationship text,
   created_at timestamptz DEFAULT now()
 );
 

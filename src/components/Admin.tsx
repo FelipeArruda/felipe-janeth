@@ -17,7 +17,6 @@ interface FamilyMember {
   id: number;
   family_id: number;
   name: string;
-  relationship: string | null;
 }
 
 interface MemberConfirmation {
@@ -30,15 +29,15 @@ interface MemberConfirmation {
 }
 
 interface NewMember {
+  id?: number;
   name: string;
-  relationship: string;
 }
 
 interface AdminProps {
   onExit: () => void;
 }
 
-const WEDDING_DATE = '27 Abril 2026';
+const WEDDING_DATE = '24 Abril 2026';
 const WEDDING_TIME = '18h';
 const WEDDING_LOCATION = 'Lourdes Square';
 const COUPLE_NAME = 'Janeth & Felipe';
@@ -146,7 +145,7 @@ export default function Admin({ onExit }: AdminProps) {
   const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
   const [newMembers, setNewMembers] = useState<NewMember[]>([
-    { name: '', relationship: '' },
+    { name: '' },
   ]);
   const [editingFamilyId, setEditingFamilyId] = useState<number | null>(null);
   const [inviteFamily, setInviteFamily] = useState<Family | null>(null);
@@ -257,7 +256,6 @@ export default function Admin({ onExit }: AdminProps) {
         'telefone',
         'observacoes',
         'membro',
-        'parentesco',
         'status',
         'confirmado_em',
       ],
@@ -272,7 +270,6 @@ export default function Admin({ onExit }: AdminProps) {
         family?.phone ?? '',
         family?.notes ?? '',
         member.name,
-        member.relationship ?? '',
         status,
         confirmation?.confirmed_at ?? '',
       ]);
@@ -572,7 +569,7 @@ export default function Admin({ onExit }: AdminProps) {
   };
 
   const handleAddMember = () => {
-    setNewMembers((prev) => [...prev, { name: '', relationship: '' }]);
+    setNewMembers((prev) => [...prev, { name: '' }]);
   };
 
   const handleRemoveMember = (index: number) => {
@@ -581,7 +578,7 @@ export default function Admin({ onExit }: AdminProps) {
 
   const handleMemberChange = (
     index: number,
-    field: 'name' | 'relationship',
+    field: 'name',
     value: string
   ) => {
     setNewMembers((prev) =>
@@ -650,7 +647,7 @@ export default function Admin({ onExit }: AdminProps) {
       setFamilyName('');
       setPhone('');
       setNotes('');
-      setNewMembers([{ name: '', relationship: '' }]);
+      setNewMembers([{ name: '' }]);
       setEditingFamilyId(null);
 
       await loadData();
@@ -827,24 +824,15 @@ export default function Admin({ onExit }: AdminProps) {
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
                     placeholder="Nome do familiar"
                   />
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={member.relationship}
-                      onChange={(e) => handleMemberChange(index, 'relationship', e.target.value)}
-                      className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
-                      placeholder="Parentesco (opcional)"
-                    />
-                    {newMembers.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveMember(index)}
-                        className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-rose-500 hover:border-rose-200"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
+                  {newMembers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(index)}
+                      className="p-2 rounded-lg border border-gray-200 text-gray-500 hover:text-rose-500 hover:border-rose-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -868,7 +856,7 @@ export default function Admin({ onExit }: AdminProps) {
                   setFamilyName('');
                   setPhone('');
                   setNotes('');
-                  setNewMembers([{ name: '', relationship: '' }]);
+                  setNewMembers([{ name: '' }]);
                 }}
                 className="w-full py-3 rounded-lg border border-gray-200 text-gray-600 hover:border-rose-200 hover:text-rose-500 transition-colors"
               >
@@ -996,10 +984,10 @@ export default function Admin({ onExit }: AdminProps) {
                         setNewMembers(
                           familyMembers.length
                             ? familyMembers.map((member) => ({
+                                id: member.id,
                                 name: member.name,
-                                relationship: member.relationship || '',
                               }))
-                            : [{ name: '', relationship: '' }]
+                            : [{ name: '' }]
                         );
                       }}
                       className="inline-flex items-center gap-2 rounded-lg border border-rose-200 px-3 py-1.5 text-sm text-rose-500 hover:bg-rose-50"
@@ -1026,7 +1014,7 @@ export default function Admin({ onExit }: AdminProps) {
                             setFamilyName('');
                             setPhone('');
                             setNotes('');
-                            setNewMembers([{ name: '', relationship: '' }]);
+                            setNewMembers([{ name: '' }]);
                           }
                           await loadData();
                         } catch (err) {
@@ -1070,11 +1058,6 @@ export default function Admin({ onExit }: AdminProps) {
                                 <p className="text-sm font-semibold text-gray-800">
                                   {member.name}
                                 </p>
-                                {member.relationship && (
-                                  <p className="text-xs text-gray-500">
-                                    {member.relationship}
-                                  </p>
-                                )}
                               </div>
                               <span
                                 className={`rounded-full border px-3 py-1 text-xs font-semibold ${badgeClass}`}

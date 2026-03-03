@@ -5,7 +5,6 @@ import { publicApi } from '../lib/api';
 interface FamilyMember {
   id: string;
   name: string;
-  relationship: string | null;
 }
 
 interface MemberConfirmation {
@@ -164,9 +163,6 @@ export default function RSVP({
                     <h3 className="font-serif text-2xl text-gray-800">
                       {member.name}
                     </h3>
-                    {member.relationship && (
-                      <p className="text-sm text-gray-500">{member.relationship}</p>
-                    )}
                   </div>
                   <div className="inline-flex rounded-full border border-rose-100 bg-white/80 p-1 shadow-sm">
                     <label className="flex items-center">

@@ -14,7 +14,6 @@ import Admin from './components/Admin';
 interface FamilyMember {
   id: string;
   name: string;
-  relationship: string | null;
 }
 
 interface ExistingConfirmation {

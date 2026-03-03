@@ -11,7 +11,6 @@ interface Family {
 interface FamilyMember {
   id: string;
   name: string;
-  relationship: string | null;
 }
 
 interface ExistingConfirmation {
@@ -64,11 +63,9 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
         ((data.members || []) as Array<{
           id: number;
           name: string;
-          relationship: string | null;
         }>).map((member) => ({
           id: String(member.id),
           name: member.name,
-          relationship: member.relationship,
         })),
         (data.confirmations || []) as ExistingConfirmation[]
       );
@@ -115,7 +112,7 @@ export default function RSVPAccess({ onAccessGranted, onBack }: RSVPAccessProps)
             <input
               type="tel"
               inputMode="numeric"
-              pattern="[0-9]*"
+              pattern="[0-9]{4}-[0-9]{4}"
               autoComplete="one-time-code"
               value={accessCode}
               onChange={handleChange}
