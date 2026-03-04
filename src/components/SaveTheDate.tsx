@@ -27,6 +27,8 @@ export default function SaveTheDate({ onRSVPClick, rsvpDeadline }: SaveTheDatePr
 
   const deadlineDate = parseDeadline(rsvpDeadline);
   const isRSVPOpen = !deadlineDate || Date.now() <= deadlineDate.getTime();
+  const cardBaseClass =
+    'rounded-2xl border border-white/20 bg-white/12 backdrop-blur-sm shadow-[0_8px_24px_rgba(76,9,28,0.18)]';
 
   return (
     <section className="py-20 px-4 bg-gradient-to-br from-rose-500 to-rose-600 text-white">
@@ -37,27 +39,29 @@ export default function SaveTheDate({ onRSVPClick, rsvpDeadline }: SaveTheDatePr
           <div className="w-24 h-1 bg-white mx-auto"></div>
         </div>
 
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 mb-8">
-          <p className="text-6xl md:text-8xl font-serif mb-4">24</p>
-          <p className="text-3xl md:text-4xl font-light mb-2">Abril</p>
-          <p className="text-3xl md:text-4xl font-light">2026</p>
+        <div className={`${cardBaseClass} mb-8 px-8 py-10 md:py-12`}>
+          <div className="mx-auto max-w-sm">
+            <p className="text-6xl md:text-8xl font-serif leading-none">24</p>
+            <p className="mt-4 text-3xl md:text-4xl font-light leading-none">Abril</p>
+            <p className="mt-3 text-3xl md:text-4xl font-light leading-none">2026</p>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <Clock className="w-8 h-8 mx-auto mb-3 text-rose-100" />
-            <h3 className="font-serif text-2xl mb-2">Horário</h3>
-            <p className="text-lg text-rose-100">18h às 21h</p>
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          <div className={`${cardBaseClass} min-h-[176px] px-6 py-7 flex flex-col items-center justify-center`}>
+            <Clock className="w-8 h-8 mx-auto mb-4 text-rose-100" />
+            <h3 className="font-serif text-2xl mb-3">Horário</h3>
+            <p className="text-2xl font-medium tracking-tight">18h às 21h</p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-            <MapPin className="w-8 h-8 mx-auto mb-3 text-rose-100" />
-            <h3 className="font-serif text-2xl mb-2">Local</h3>
+          <div className={`${cardBaseClass} min-h-[176px] px-6 py-7 flex flex-col items-center justify-center`}>
+            <MapPin className="w-8 h-8 mx-auto mb-4 text-rose-100" />
+            <h3 className="font-serif text-2xl mb-3">Local</h3>
             <a
               href={mapsUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-block text-lg text-rose-100 underline underline-offset-4 hover:text-white"
+              className="inline-block text-2xl font-medium tracking-tight text-white underline underline-offset-4 decoration-white/70 hover:decoration-white"
             >
               Lourdes Square Spazio
             </a>
