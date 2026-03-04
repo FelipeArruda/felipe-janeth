@@ -318,24 +318,31 @@ export default function Admin({ onExit }: AdminProps) {
       .map((item) => {
         return `
           <section class="print-sheet">
-            <article class="scene">
-              <div class="twine twine-main"></div>
-              <div class="twine twine-loop"></div>
+            <article class="message-card">
+              <div class="card-frame">
+                <div class="frame-inner">
+                  <div class="ornament ornament-top-left"></div>
+                  <div class="ornament ornament-top-right"></div>
+                  <div class="ornament ornament-bottom-left"></div>
+                  <div class="ornament ornament-bottom-right"></div>
 
-              <div class="kraft-tag">
-                <div class="tag-hole"></div>
-                <div class="tag-grain"></div>
+                  <header class="card-header">
+                    <p class="eyebrow">Mensagem Especial</p>
+                    <h1>${escapeHtml(item.familyName)}</h1>
+                    <div class="divider">
+                      <span></span>
+                      <i>•••</i>
+                      <span></span>
+                    </div>
+                  </header>
 
-                <header>
-                  <h1>${escapeHtml(item.familyName)}</h1>
-                </header>
+                  <blockquote>${escapeHtml(item.message)}</blockquote>
 
-                <blockquote>${escapeHtml(item.message)}</blockquote>
-
-                <footer>
-                  <span>${escapeHtml(WEDDING_DATE)}</span>
-                  <span><strong>Janeth &amp; Felipe</strong></span>
-                </footer>
+                  <footer>
+                    <span>${escapeHtml(WEDDING_DATE)}</span>
+                    <strong>Janeth &amp; Felipe</strong>
+                  </footer>
+                </div>
               </div>
             </article>
           </section>
@@ -352,11 +359,24 @@ export default function Admin({ onExit }: AdminProps) {
           <title>Mensagens das Famílias</title>
           <style>
             @page { size: A4; margin: 14mm; }
+            :root {
+              --paper: #f4efe8;
+              --card: #f9f5ee;
+              --ink: #2f2924;
+              --ink-soft: #5a4f45;
+              --gold: #a68352;
+              --gold-soft: #ccb28a;
+              --line: rgba(125, 99, 68, 0.36);
+            }
             * { box-sizing: border-box; }
             body {
               margin: 0;
-              background: #f6f1ec;
-              color: #2f2723;
+              background:
+                radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.74), transparent 42%),
+                radial-gradient(circle at 100% 100%, rgba(212, 187, 153, 0.2), transparent 35%),
+                var(--paper);
+              color: var(--ink);
+              font-family: "Cormorant Garamond", "Times New Roman", serif;
             }
             .page { padding: 6px; }
             .print-sheet {
@@ -369,122 +389,145 @@ export default function Admin({ onExit }: AdminProps) {
             }
             .print-sheet:last-of-type { page-break-after: auto; }
 
-            .scene {
+            .message-card {
               position: relative;
-              width: 182mm;
-              min-height: 120mm;
+              width: 178mm;
+              min-height: 118mm;
               display: flex;
               align-items: center;
               justify-content: center;
+              padding: 3mm;
+              background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0)),
+                linear-gradient(135deg, rgba(207, 181, 141, 0.12), rgba(255, 255, 255, 0));
+              border: 1px solid rgba(166, 131, 82, 0.25);
+              box-shadow: 0 14px 36px rgba(62, 43, 24, 0.12);
             }
 
-            .twine {
-              position: absolute;
-              background: #b89667;
-              z-index: 0;
-            }
-            .twine-main {
-              width: 84mm;
-              height: 2px;
-              left: 18mm;
-              top: 48mm;
-              transform: rotate(-14deg);
-            }
-            .twine-loop {
-              width: 16mm;
-              height: 16mm;
-              border: 2px solid #b89667;
-              border-radius: 50%;
-              border-top-color: transparent;
-              border-right-color: transparent;
-              left: 9mm;
-              top: 42mm;
-              background: transparent;
-              transform: rotate(-8deg);
+            .card-frame {
+              width: 100%;
+              min-height: 100%;
+              border: 1.2px solid var(--gold-soft);
+              padding: 1.6mm;
+              background: rgba(252, 249, 243, 0.9);
             }
 
-            .kraft-tag {
+            .frame-inner {
               position: relative;
-              width: 154mm;
-              min-height: 76mm;
-              margin-left: 12mm;
-              transform: none;
-              background: #e2cba8;
-              border: 1px solid #b69262;
-              box-shadow: 0 14px 30px rgba(67, 48, 26, 0.16);
-              padding: 12mm 11mm 8mm 16mm;
+              min-height: calc(118mm - 9.2mm);
+              border: 1px solid var(--line);
+              background:
+                radial-gradient(rgba(109, 84, 53, 0.05) 0.55px, transparent 0.75px),
+                linear-gradient(160deg, rgba(255, 255, 255, 0.72), rgba(245, 236, 223, 0.74)),
+                var(--card);
+              background-size: 4px 4px, 100% 100%, 100% 100%;
+              padding: 10mm 14mm 8mm;
               overflow: hidden;
-              z-index: 1;
             }
 
-            .tag-hole {
+            .ornament {
               position: absolute;
-              left: 50%;
-              top: 4.5mm;
-              width: 4.5mm;
-              height: 4.5mm;
-              margin-left: -2.25mm;
-              border-radius: 50%;
-              background: #f4efe7;
-              border: 1px solid #a68458;
-              box-shadow: inset 0 0 0 1px rgba(126, 97, 58, 0.14);
-            }
-
-            .tag-grain {
-              position: absolute;
-              inset: 0;
-              background-image:
-                radial-gradient(rgba(92, 70, 39, 0.18) 0.55px, transparent 0.75px),
-                radial-gradient(rgba(107, 82, 46, 0.1) 0.45px, transparent 0.7px),
-                repeating-linear-gradient(
-                  12deg,
-                  rgba(101, 79, 48, 0.03) 0px,
-                  rgba(101, 79, 48, 0.03) 1px,
-                  transparent 1px,
-                  transparent 4px
-                ),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(120, 94, 56, 0.06));
-              background-size: 5px 5px, 8px 8px, 100% 100%, 100% 100%;
-              background-position: 0 0, 2px 3px, 0 0, 0 0;
+              width: 14mm;
+              height: 14mm;
+              border: 1px solid rgba(166, 131, 82, 0.45);
+              border-radius: 1px;
               pointer-events: none;
-              z-index: -1;
+            }
+
+            .ornament::before,
+            .ornament::after {
+              content: "";
+              position: absolute;
+              border: 1px solid rgba(166, 131, 82, 0.45);
+              width: 8mm;
+              height: 8mm;
+              transform: rotate(45deg);
+            }
+
+            .ornament::before { top: -5.2mm; left: 2.8mm; }
+            .ornament::after { top: 2.8mm; left: -5.2mm; }
+
+            .ornament-top-left { top: 3.5mm; left: 3.5mm; border-right: 0; border-bottom: 0; }
+            .ornament-top-right { top: 3.5mm; right: 3.5mm; border-left: 0; border-bottom: 0; transform: scaleX(-1); }
+            .ornament-bottom-left { bottom: 3.5mm; left: 3.5mm; border-right: 0; border-top: 0; transform: scaleY(-1); }
+            .ornament-bottom-right { bottom: 3.5mm; right: 3.5mm; border-left: 0; border-top: 0; transform: scale(-1); }
+
+            .card-header {
+              text-align: center;
+            }
+
+            .eyebrow {
+              margin: 0;
+              font: 600 11px/1.1 "Arial", sans-serif;
+              letter-spacing: 0.32em;
+              text-transform: uppercase;
+              color: #8f7759;
             }
 
             h1 {
+              margin: 2.6mm 0 0;
+              font: 600 23px/1.12 "Playfair Display", "Times New Roman", serif;
+              letter-spacing: 0.01em;
+              color: #30271f;
+            }
+
+            .divider {
+              margin: 3.8mm auto 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              color: var(--gold);
+            }
+
+            .divider span {
+              display: block;
+              width: 34mm;
+              height: 1px;
+              background: linear-gradient(
+                to right,
+                rgba(166, 131, 82, 0),
+                rgba(166, 131, 82, 0.75),
+                rgba(166, 131, 82, 0)
+              );
+            }
+
+            .divider i {
               margin: 0;
-              text-align: center;
-              font: 400 52px/1 "Brush Script MT", "Segoe Script", cursive;
-              color: #3a2c21;
+              font-style: normal;
+              font-size: 8px;
+              letter-spacing: 0.28em;
             }
 
             blockquote {
-              margin: 5mm 0 0;
+              margin: 6mm 0 0;
               border: 0;
               padding: 0;
               text-align: center;
               white-space: pre-wrap;
-              font: 400 29px/1.28 "Brush Script MT", "Segoe Script", "Times New Roman", cursive;
-              color: #3f3126;
+              font: 500 19px/1.42 "Cormorant Garamond", "Times New Roman", serif;
+              color: var(--ink-soft);
+              min-height: 46mm;
             }
 
             footer {
-              margin-top: 7mm;
-              border-top: 1px solid rgba(103, 80, 51, 0.24);
-              padding-top: 2.5mm;
+              margin-top: 4mm;
+              border-top: 1px solid rgba(133, 106, 74, 0.3);
+              padding-top: 3mm;
               display: flex;
               justify-content: space-between;
               flex-wrap: wrap;
-              gap: 6px 12px;
+              gap: 6px 10px;
               font: 600 10px/1.2 "Arial", sans-serif;
-              letter-spacing: 0.06em;
+              letter-spacing: 0.1em;
               text-transform: uppercase;
-              color: #665443;
+              color: #7a6347;
             }
 
             .actions {
               position: sticky;
               bottom: 0;
-              background: linear-gradient(to top, rgba(246, 241, 236, 0.98), rgba(246, 241, 236, 0));
+              background: linear-gradient(to top, rgba(244, 239, 232, 0.98), rgba(244, 239, 232, 0));
               padding: 14px 8px 8px;
               display: flex;
               justify-content: flex-end;
@@ -497,14 +540,14 @@ export default function Admin({ onExit }: AdminProps) {
               font: 600 13px/1 "Arial", sans-serif;
               cursor: pointer;
             }
-            .print-btn { background: #e11d48; color: #fff; }
+            .print-btn { background: #7a5a2f; color: #fff; }
             .close-btn { background: #e5e7eb; color: #111827; }
 
             @media print {
               body { background: #fff; }
               .page { padding: 0; }
               .actions { display: none; }
-              .kraft-tag { box-shadow: none; }
+              .message-card { box-shadow: none; }
             }
           </style>
         </head>
