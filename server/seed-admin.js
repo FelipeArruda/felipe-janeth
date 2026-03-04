@@ -14,6 +14,9 @@ if (!email || !password) {
   process.exit(1);
 }
 
+const normalizedEmail = email?.trim().toLowerCase();
+const normalizedPassword = password?.trim();
+
 const pool = new Pool({
   connectionString: DATABASE_URL,
   ssl: USE_SSL ? { rejectUnauthorized: false } : undefined,
@@ -29,13 +32,13 @@ const run = async () => {
     );
   `);
 
-  const passwordHash = bcrypt.hashSync(password, 10);
+  const passwordHash = bcrypt.hashSync(normalizedPassword, 10);
 
   await pool.query(
     `INSERT INTO admin_users (email, password_hash)
      VALUES ($1, $2)
      ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-    [email, passwordHash]
+    [normalizedEmail, passwordHash]
   );
 
   console.log('Admin criado/atualizado.');

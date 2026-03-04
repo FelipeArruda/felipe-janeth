@@ -102,12 +102,14 @@ const ensureAdminUser = async () => {
     return;
   }
 
-  const passwordHash = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+  const normalizedEmail = ADMIN_EMAIL.trim().toLowerCase();
+  const normalizedPassword = ADMIN_PASSWORD.trim();
+
   await pool.query(
     `INSERT INTO admin_users (email, password_hash)
      VALUES ($1, $2)
      ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-    [ADMIN_EMAIL, passwordHash]
+    [normalizedEmail, bcrypt.hashSync(normalizedPassword, 10)]
   );
 };
 
@@ -144,12 +146,14 @@ const start = async () => {
       return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
 
-    const { rows } = await pool.query('SELECT * FROM admin_users WHERE email = $1', [
-      email,
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const normalizedPassword = String(password).trim();
+    const { rows } = await pool.query('SELECT * FROM admin_users WHERE lower(email) = $1', [
+      normalizedEmail,
     ]);
     const user = rows[0];
 
-    if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+    if (!user || !bcrypt.compareSync(normalizedPassword, user.password_hash)) {
       return res.status(401).json({ error: 'Login inválido.' });
     }
 
