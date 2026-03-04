@@ -814,8 +814,8 @@ export default function Admin({ onExit }: AdminProps) {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-white to-rose-50 px-4 py-12">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen bg-gradient-to-b from-white to-rose-50 px-4 py-6 lg:h-screen lg:overflow-hidden">
+      <div className="max-w-6xl mx-auto lg:h-full lg:flex lg:flex-col">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
           <div>
             <h1 className="font-serif text-4xl text-gray-800">Painel de Convidados</h1>
@@ -838,10 +838,10 @@ export default function Admin({ onExit }: AdminProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] gap-8 lg:min-h-0 lg:flex-1">
           <form
             onSubmit={handleCreateFamily}
-            className="bg-white rounded-xl shadow-lg p-6 space-y-4"
+            className="bg-white rounded-xl shadow-lg p-6 space-y-4 lg:max-h-full lg:overflow-y-auto"
           >
             <div className="flex items-center gap-2 text-rose-500 font-semibold">
               <UserPlus className="w-5 h-5" />
@@ -955,7 +955,7 @@ export default function Admin({ onExit }: AdminProps) {
             )}
           </form>
 
-          <div className="space-y-4">
+          <div className="space-y-4 lg:min-h-0 lg:flex lg:flex-col">
             <div className="bg-white rounded-2xl border border-rose-100/70 p-6 shadow-sm">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -1033,146 +1033,148 @@ export default function Admin({ onExit }: AdminProps) {
               </button>
             </div>
 
-            {loading && families.length === 0 ? (
-              <p className="text-gray-500">Carregando famílias...</p>
-            ) : null}
+            <div className="lg:min-h-0 lg:overflow-y-auto lg:pr-2">
+              {loading && families.length === 0 ? (
+                <p className="text-gray-500">Carregando famílias...</p>
+              ) : null}
 
-            <div className="space-y-5">
-              {families.map((family) => (
-                <div
-                  key={family.id}
-                  className="bg-white rounded-2xl border border-rose-100/70 p-6 shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-6">
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-800">
-                        {family.family_name}
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Código:{' '}
-                        <span className="font-mono tracking-wide">
-                          {formatAccessCode(family.access_code)}
-                        </span>
-                      </p>
-                      {family.phone && (
-                        <p className="text-sm text-gray-500">WhatsApp: {family.phone}</p>
+              <div className="space-y-5">
+                {families.map((family) => (
+                  <div
+                    key={family.id}
+                    className="bg-white rounded-2xl border border-rose-100/70 p-6 shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-6">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800">
+                          {family.family_name}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Código:{' '}
+                          <span className="font-mono tracking-wide">
+                            {formatAccessCode(family.access_code)}
+                          </span>
+                        </p>
+                        {family.phone && (
+                          <p className="text-sm text-gray-500">WhatsApp: {family.phone}</p>
+                        )}
+                      </div>
+                      {family.notes && (
+                        <p className="text-sm text-gray-500 max-w-md">{family.notes}</p>
                       )}
                     </div>
-                    {family.notes && (
-                      <p className="text-sm text-gray-500 max-w-md">{family.notes}</p>
-                    )}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditingFamilyId(family.id);
-                        setFamilyName(family.family_name);
-                        setPhone(family.phone || '');
-                        setNotes(family.notes || '');
-                        const familyMembers = memberMap[family.id] || [];
-                        setNewMembers(
-                          familyMembers.length
-                            ? familyMembers.map((member) => ({
-                                id: member.id,
-                                name: member.name,
-                              }))
-                            : [{ name: '' }]
-                        );
-                      }}
-                      className="inline-flex items-center gap-2 rounded-lg border border-rose-200 px-3 py-1.5 text-sm text-rose-500 hover:bg-rose-50"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setInviteFamily(family)}
-                      className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:text-rose-500 hover:border-rose-200"
-                    >
-                      Baixar convite
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!confirm('Tem certeza que deseja remover esta família?')) return;
-                        setLoading(true);
-                        try {
-                          await adminApi.deleteFamily(family.id);
-                          if (editingFamilyId === family.id) {
-                            setEditingFamilyId(null);
-                            setFamilyName('');
-                            setPhone('');
-                            setNotes('');
-                            setNewMembers([{ name: '' }]);
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingFamilyId(family.id);
+                          setFamilyName(family.family_name);
+                          setPhone(family.phone || '');
+                          setNotes(family.notes || '');
+                          const familyMembers = memberMap[family.id] || [];
+                          setNewMembers(
+                            familyMembers.length
+                              ? familyMembers.map((member) => ({
+                                  id: member.id,
+                                  name: member.name,
+                                }))
+                              : [{ name: '' }]
+                          );
+                        }}
+                        className="inline-flex items-center gap-2 rounded-lg border border-rose-200 px-3 py-1.5 text-sm text-rose-500 hover:bg-rose-50"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setInviteFamily(family)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:text-rose-500 hover:border-rose-200"
+                      >
+                        Baixar convite
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!confirm('Tem certeza que deseja remover esta família?')) return;
+                          setLoading(true);
+                          try {
+                            await adminApi.deleteFamily(family.id);
+                            if (editingFamilyId === family.id) {
+                              setEditingFamilyId(null);
+                              setFamilyName('');
+                              setPhone('');
+                              setNotes('');
+                              setNewMembers([{ name: '' }]);
+                            }
+                            await loadData();
+                          } catch {
+                            setFormError('Erro ao remover família.');
+                          } finally {
+                            setLoading(false);
                           }
-                          await loadData();
-                        } catch {
-                          setFormError('Erro ao remover família.');
-                        } finally {
-                          setLoading(false);
-                        }
-                      }}
-                      className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:text-rose-500 hover:border-rose-200"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Remover
-                    </button>
-                  </div>
+                        }}
+                        className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 hover:text-rose-500 hover:border-rose-200"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Remover
+                      </button>
+                    </div>
 
-                  <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-700">Familiares</p>
-                    <div className="mt-3 grid gap-3 md:grid-cols-2">
-                      {(memberMap[family.id] || []).map((member) => {
-                        const confirmation = confirmationMap[member.id];
-                        const attending =
-                          confirmation?.attending
-                            ? 'Confirmado'
-                            : confirmation
-                            ? 'Não irá'
-                            : 'Sem resposta';
-                        const badgeClass =
-                          confirmation?.attending
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : confirmation
-                            ? 'bg-rose-50 text-rose-700 border-rose-200'
-                            : 'bg-gray-50 text-gray-600 border-gray-200';
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-gray-700">Familiares</p>
+                      <div className="mt-3 grid gap-3 md:grid-cols-2">
+                        {(memberMap[family.id] || []).map((member) => {
+                          const confirmation = confirmationMap[member.id];
+                          const attending =
+                            confirmation?.attending
+                              ? 'Confirmado'
+                              : confirmation
+                              ? 'Não irá'
+                              : 'Sem resposta';
+                          const badgeClass =
+                            confirmation?.attending
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : confirmation
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              : 'bg-gray-50 text-gray-600 border-gray-200';
 
-                        return (
-                          <div
-                            key={member.id}
-                            className="rounded-xl border border-gray-100 bg-white px-4 py-3"
-                          >
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="text-sm font-semibold text-gray-800">
-                                  {member.name}
-                                </p>
+                          return (
+                            <div
+                              key={member.id}
+                              className="rounded-xl border border-gray-100 bg-white px-4 py-3"
+                            >
+                              <div className="flex items-center justify-between gap-3">
+                                <div>
+                                  <p className="text-sm font-semibold text-gray-800">
+                                    {member.name}
+                                  </p>
+                                </div>
+                                <span
+                                  className={`rounded-full border px-3 py-1 text-xs font-semibold ${badgeClass}`}
+                                >
+                                  {attending}
+                                </span>
                               </div>
-                              <span
-                                className={`rounded-full border px-3 py-1 text-xs font-semibold ${badgeClass}`}
-                              >
-                                {attending}
-                              </span>
+                              {confirmation?.dietary_restrictions && (
+                                <p className="mt-2 text-xs text-gray-600">
+                                  Restrição: {confirmation.dietary_restrictions}
+                                </p>
+                              )}
                             </div>
-                            {confirmation?.dietary_restrictions && (
-                              <p className="mt-2 text-xs text-gray-600">
-                                Restrição: {confirmation.dietary_restrictions}
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              {families.length === 0 && !loading ? (
-                <div className="bg-white rounded-xl border border-dashed border-rose-200 p-6 text-center text-gray-500">
-                  Nenhuma família cadastrada ainda.
-                </div>
-              ) : null}
+                {families.length === 0 && !loading ? (
+                  <div className="bg-white rounded-xl border border-dashed border-rose-200 p-6 text-center text-gray-500">
+                    Nenhuma família cadastrada ainda.
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
