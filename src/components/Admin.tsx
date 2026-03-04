@@ -93,7 +93,7 @@ const BoardingPassInvite = ({ family }: { family: Family }) => {
         <h2 className="mt-3 font-serif text-[58px] leading-none text-gray-800">{COUPLE_NAME}</h2>
       </div>
 
-      <div className="absolute top-[196px] left-[74px] right-[74px] text-center">
+      <div className="absolute top-[168px] left-[74px] right-[74px] text-center">
         <p className="text-[13px] leading-none text-gray-500 uppercase tracking-[0.22em]">
           Com amor, convidamos você para celebrar conosco
         </p>
@@ -355,8 +355,8 @@ export default function Admin({ onExit }: AdminProps) {
             * { box-sizing: border-box; }
             body {
               margin: 0;
-              background: #f5f2ed;
-              color: #2a2622;
+              background: #f6f1ec;
+              color: #2f2723;
             }
             .page { padding: 6px; }
             .print-sheet {
@@ -380,7 +380,7 @@ export default function Admin({ onExit }: AdminProps) {
 
             .twine {
               position: absolute;
-              background: #c6ab86;
+              background: #b89667;
               z-index: 0;
             }
             .twine-main {
@@ -393,7 +393,7 @@ export default function Admin({ onExit }: AdminProps) {
             .twine-loop {
               width: 16mm;
               height: 16mm;
-              border: 2px solid #c6ab86;
+              border: 2px solid #b89667;
               border-radius: 50%;
               border-top-color: transparent;
               border-right-color: transparent;
@@ -409,9 +409,9 @@ export default function Admin({ onExit }: AdminProps) {
               min-height: 76mm;
               margin-left: 12mm;
               transform: none;
-              background: #d8be95;
-              border: 1px solid #b99a6f;
-              box-shadow: 0 14px 30px rgba(64, 49, 33, 0.2);
+              background: #e2cba8;
+              border: 1px solid #b69262;
+              box-shadow: 0 14px 30px rgba(67, 48, 26, 0.16);
               padding: 12mm 11mm 8mm 16mm;
               overflow: hidden;
               z-index: 1;
@@ -425,9 +425,9 @@ export default function Admin({ onExit }: AdminProps) {
               height: 4.5mm;
               margin-left: -2.25mm;
               border-radius: 50%;
-              background: #eee9e1;
-              border: 1px solid #a6885e;
-              box-shadow: inset 0 0 0 1px rgba(120, 96, 62, 0.15);
+              background: #f4efe7;
+              border: 1px solid #a68458;
+              box-shadow: inset 0 0 0 1px rgba(126, 97, 58, 0.14);
             }
 
             .tag-grain {
@@ -435,15 +435,15 @@ export default function Admin({ onExit }: AdminProps) {
               inset: 0;
               background-image:
                 radial-gradient(rgba(92, 70, 39, 0.18) 0.55px, transparent 0.75px),
-                radial-gradient(rgba(107, 82, 46, 0.12) 0.45px, transparent 0.7px),
+                radial-gradient(rgba(107, 82, 46, 0.1) 0.45px, transparent 0.7px),
                 repeating-linear-gradient(
                   12deg,
-                  rgba(101, 79, 48, 0.04) 0px,
-                  rgba(101, 79, 48, 0.04) 1px,
+                  rgba(101, 79, 48, 0.03) 0px,
+                  rgba(101, 79, 48, 0.03) 1px,
                   transparent 1px,
                   transparent 4px
                 ),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(120, 94, 56, 0.08));
+                linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(120, 94, 56, 0.06));
               background-size: 5px 5px, 8px 8px, 100% 100%, 100% 100%;
               background-position: 0 0, 2px 3px, 0 0, 0 0;
               pointer-events: none;
@@ -454,7 +454,7 @@ export default function Admin({ onExit }: AdminProps) {
               margin: 0;
               text-align: center;
               font: 400 52px/1 "Brush Script MT", "Segoe Script", cursive;
-              color: #2f251c;
+              color: #3a2c21;
             }
 
             blockquote {
@@ -464,12 +464,12 @@ export default function Admin({ onExit }: AdminProps) {
               text-align: center;
               white-space: pre-wrap;
               font: 400 29px/1.28 "Brush Script MT", "Segoe Script", "Times New Roman", cursive;
-              color: #3d3329;
+              color: #3f3126;
             }
 
             footer {
               margin-top: 7mm;
-              border-top: 1px solid rgba(103, 80, 51, 0.3);
+              border-top: 1px solid rgba(103, 80, 51, 0.24);
               padding-top: 2.5mm;
               display: flex;
               justify-content: space-between;
@@ -478,13 +478,13 @@ export default function Admin({ onExit }: AdminProps) {
               font: 600 10px/1.2 "Arial", sans-serif;
               letter-spacing: 0.06em;
               text-transform: uppercase;
-              color: #5b4d3f;
+              color: #665443;
             }
 
             .actions {
               position: sticky;
               bottom: 0;
-              background: linear-gradient(to top, rgba(245, 242, 237, 0.98), rgba(245, 242, 237, 0));
+              background: linear-gradient(to top, rgba(246, 241, 236, 0.98), rgba(246, 241, 236, 0));
               padding: 14px 8px 8px;
               display: flex;
               justify-content: flex-end;
