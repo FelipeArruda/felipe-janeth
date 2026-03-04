@@ -41,6 +41,7 @@ const WEDDING_DATE = '24 Abril 2026';
 const WEDDING_TIME = '18h às 21h';
 const WEDDING_LOCATION = 'Lourdes Square Spazio';
 const COUPLE_NAME = 'Janeth & Felipe';
+const INVITE_SITE_URL = 'https://janethandfelipe.felipearruda.dev.br';
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);
@@ -79,10 +80,7 @@ const escapeHtml = (value: string) =>
 const BoardingPassInvite = ({ family }: { family: Family }) => {
   const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
   const deadlineLabel = formatDeadlineLabel(rsvpDeadline);
-  const inviteUrl =
-    typeof window !== 'undefined' && window.location?.origin
-      ? `${window.location.origin}/?code=${family.access_code}`
-      : family.access_code;
+  const inviteUrl = INVITE_SITE_URL;
 
   return (
     <div className="relative w-[900px] h-[600px] rounded-[28px] overflow-hidden border border-rose-100 bg-[#f6f2ef]">
