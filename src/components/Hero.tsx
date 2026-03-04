@@ -21,13 +21,17 @@ export default function Hero() {
 
         <div className="w-32 h-1 bg-rose-400 mx-auto mb-6"></div>
 
-        <p className="text-2xl md:text-3xl font-light tracking-wider mb-8">
-          Vamos nos casar!
-        </p>
+        <div className="inline-flex flex-col items-center px-8 py-6">
+          <p className="font-serif text-4xl md:text-5xl font-medium leading-none">
+            Vamos nos casar!
+          </p>
 
-        <p className="text-xl md:text-2xl font-light">
-          24 de Abril de 2026
-        </p>
+          <div className="mt-4 h-px w-24 bg-white/50"></div>
+
+          <p className="mt-4 text-lg md:text-xl font-medium tracking-[0.16em] uppercase text-white/90">
+            24 de Abril de 2026
+          </p>
+        </div>
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
