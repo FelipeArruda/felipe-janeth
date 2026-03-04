@@ -1,4 +1,4 @@
-ï»¿const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5174';
+const API_URL = import.meta.env.VITE_API_URL || '';
 const TOKEN_KEY = 'admin_token';
 
 const getToken = () => localStorage.getItem(TOKEN_KEY);
@@ -14,7 +14,7 @@ const request = async (path: string, options: RequestInit = {}) => {
 
   if (!res.ok) {
     const message = await res.json().catch(() => ({}));
-    throw new Error(message.error || 'Erro na requisiÃ§Ã£o');
+    throw new Error(message.error || 'Erro na requisição');
   }
 
   return res.json();
@@ -69,3 +69,4 @@ export const adminApi = {
   deleteFamily: (id: number) =>
     authedRequest(`/api/admin/families/${id}`, { method: 'DELETE' }),
 };
+
