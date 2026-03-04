@@ -7,6 +7,7 @@
     "dev": "vite",
     "dev:server": "node --env-file=.env server/index.js",
     "seed:admin": "node --env-file=.env server/seed-admin.js",
+    "seed:mock": "node --env-file=.env server/seed-mock-data.js",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
