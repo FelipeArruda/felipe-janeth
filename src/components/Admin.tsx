@@ -95,7 +95,7 @@ const BoardingPassInvite = ({ family }: { family: Family }) => {
 
       <div className="absolute top-[168px] left-[74px] right-[74px] text-center">
         <p className="text-[13px] leading-none text-gray-500 uppercase tracking-[0.22em]">
-          Com amor, convidamos você para celebrar conosco
+          Com amor, convidamos você para celebrar este dia conosco
         </p>
         <div className="mt-3 flex items-center justify-center gap-6">
           <div className="h-px w-[34%] bg-rose-200" />
