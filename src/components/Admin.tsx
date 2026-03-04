@@ -41,6 +41,7 @@ const WEDDING_DATE = '24 Abril 2026';
 const WEDDING_TIME = '18h às 21h';
 const WEDDING_LOCATION = 'Lourdes Square Spazio';
 const COUPLE_NAME = 'Janeth & Felipe';
+const INVITE_SITE_URL = 'https://janethandfelipe.felipearruda.dev.br';
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);
@@ -79,10 +80,7 @@ const escapeHtml = (value: string) =>
 const BoardingPassInvite = ({ family }: { family: Family }) => {
   const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
   const deadlineLabel = formatDeadlineLabel(rsvpDeadline);
-  const inviteUrl =
-    typeof window !== 'undefined' && window.location?.origin
-      ? `${window.location.origin}/?code=${family.access_code}`
-      : family.access_code;
+  const inviteUrl = INVITE_SITE_URL;
 
   return (
     <div className="relative w-[900px] h-[600px] rounded-[28px] overflow-hidden border border-rose-100 bg-[#f6f2ef]">
@@ -318,24 +316,29 @@ export default function Admin({ onExit }: AdminProps) {
       .map((item) => {
         return `
           <section class="print-sheet">
-            <article class="scene">
-              <div class="twine twine-main"></div>
-              <div class="twine twine-loop"></div>
-
-              <div class="kraft-tag">
+            <article class="tag-scene">
+              <div class="gift-tag">
                 <div class="tag-hole"></div>
-                <div class="tag-grain"></div>
-
-                <header>
-                  <h1>${escapeHtml(item.familyName)}</h1>
-                </header>
-
-                <blockquote>${escapeHtml(item.message)}</blockquote>
-
-                <footer>
-                  <span>${escapeHtml(WEDDING_DATE)}</span>
-                  <span><strong>Janeth &amp; Felipe</strong></span>
-                </footer>
+                <div class="frame-inner">
+                  <div class="ornament ornament-top-left"></div>
+                  <div class="ornament ornament-top-right"></div>
+                  <div class="ornament ornament-bottom-left"></div>
+                  <div class="ornament ornament-bottom-right"></div>
+                  <header class="card-header">
+                    <p class="eyebrow">Mensagem Especial</p>
+                    <h1>${escapeHtml(item.familyName)}</h1>
+                    <div class="divider">
+                      <span></span>
+                      <i>•••</i>
+                      <span></span>
+                    </div>
+                  </header>
+                  <blockquote>${escapeHtml(item.message)}</blockquote>
+                  <footer>
+                    <strong>Janeth &amp; Felipe</strong>
+                    <span>${escapeHtml(WEDDING_DATE)}</span>
+                  </footer>
+                </div>
               </div>
             </article>
           </section>
@@ -352,11 +355,24 @@ export default function Admin({ onExit }: AdminProps) {
           <title>Mensagens das Famílias</title>
           <style>
             @page { size: A4; margin: 14mm; }
+            :root {
+              --paper: #f0e8de;
+              --tag: #fffdf9;
+              --ink: #2d2722;
+              --ink-soft: #5f5449;
+              --rope: #9d7d57;
+              --line: rgba(140, 118, 87, 0.36);
+              --gold: #a68352;
+            }
             * { box-sizing: border-box; }
             body {
               margin: 0;
-              background: #f6f1ec;
-              color: #2f2723;
+              background:
+                radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.7), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(190, 155, 112, 0.16), transparent 35%),
+                var(--paper);
+              color: var(--ink);
+              font-family: "Cormorant Garamond", "Times New Roman", serif;
             }
             .page { padding: 6px; }
             .print-sheet {
@@ -369,122 +385,179 @@ export default function Admin({ onExit }: AdminProps) {
             }
             .print-sheet:last-of-type { page-break-after: auto; }
 
-            .scene {
+            .tag-scene {
               position: relative;
-              width: 182mm;
-              min-height: 120mm;
+              width: 95mm;
+              min-height: 152mm;
               display: flex;
               align-items: center;
               justify-content: center;
+              padding-top: 0;
             }
 
-            .twine {
+            .gift-tag {
               position: absolute;
-              background: #b89667;
-              z-index: 0;
-            }
-            .twine-main {
-              width: 84mm;
-              height: 2px;
-              left: 18mm;
-              top: 48mm;
-              transform: rotate(-14deg);
-            }
-            .twine-loop {
-              width: 16mm;
-              height: 16mm;
-              border: 2px solid #b89667;
-              border-radius: 50%;
-              border-top-color: transparent;
-              border-right-color: transparent;
-              left: 9mm;
-              top: 42mm;
-              background: transparent;
-              transform: rotate(-8deg);
+              top: 8mm;
+              width: 86mm;
+              min-height: 138mm;
+              padding: 15mm 4mm 4mm;
+              border: 1px solid var(--line);
+              border-radius: 2.6mm;
+              background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+                var(--tag);
+              box-shadow: 0 10px 22px rgba(47, 32, 17, 0.16);
+              overflow: hidden;
             }
 
-            .kraft-tag {
-              position: relative;
-              width: 154mm;
-              min-height: 76mm;
-              margin-left: 12mm;
-              transform: none;
-              background: #e2cba8;
-              border: 1px solid #b69262;
-              box-shadow: 0 14px 30px rgba(67, 48, 26, 0.16);
-              padding: 12mm 11mm 8mm 16mm;
-              overflow: hidden;
-              z-index: 1;
+            .gift-tag::before {
+              content: '';
+              position: absolute;
+              inset: 2.3mm;
+              border: 1px solid rgba(140, 118, 87, 0.24);
+              border-radius: 1.8mm;
+              pointer-events: none;
             }
 
             .tag-hole {
               position: absolute;
               left: 50%;
-              top: 4.5mm;
-              width: 4.5mm;
-              height: 4.5mm;
-              margin-left: -2.25mm;
+              top: 4mm;
+              width: 5.2mm;
+              height: 5.2mm;
+              margin-left: -2.6mm;
               border-radius: 50%;
-              background: #f4efe7;
-              border: 1px solid #a68458;
-              box-shadow: inset 0 0 0 1px rgba(126, 97, 58, 0.14);
+              background: #ece3d8;
+              border: 1px solid #9e876a;
+              box-shadow: inset 0 0 0 1px rgba(146, 123, 96, 0.2);
+              z-index: 2;
             }
 
-            .tag-grain {
+            .frame-inner {
+              position: relative;
+              min-height: 126mm;
+              width: 100%;
+              border: 1px solid rgba(140, 118, 87, 0.28);
+              background:
+                radial-gradient(rgba(109, 84, 53, 0.045) 0.55px, transparent 0.75px),
+                linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(245, 236, 223, 0.6)),
+                var(--tag);
+              background-size: 4px 4px, 100% 100%, 100% 100%;
+              border-radius: 1.4mm;
+              padding: 13mm 6mm 7mm;
+              overflow: hidden;
+            }
+
+            .ornament {
               position: absolute;
-              inset: 0;
-              background-image:
-                radial-gradient(rgba(92, 70, 39, 0.18) 0.55px, transparent 0.75px),
-                radial-gradient(rgba(107, 82, 46, 0.1) 0.45px, transparent 0.7px),
-                repeating-linear-gradient(
-                  12deg,
-                  rgba(101, 79, 48, 0.03) 0px,
-                  rgba(101, 79, 48, 0.03) 1px,
-                  transparent 1px,
-                  transparent 4px
-                ),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(120, 94, 56, 0.06));
-              background-size: 5px 5px, 8px 8px, 100% 100%, 100% 100%;
-              background-position: 0 0, 2px 3px, 0 0, 0 0;
+              width: 10mm;
+              height: 10mm;
+              border: 1px solid rgba(166, 131, 82, 0.42);
+              border-radius: 1px;
               pointer-events: none;
-              z-index: -1;
+            }
+            .ornament::before,
+            .ornament::after {
+              content: "";
+              position: absolute;
+              border: 1px solid rgba(166, 131, 82, 0.42);
+              width: 5.6mm;
+              height: 5.6mm;
+              transform: rotate(45deg);
+            }
+            .ornament::before { top: -3.7mm; left: 2.2mm; }
+            .ornament::after { top: 2.2mm; left: -3.7mm; }
+            .ornament-top-left { top: 2.6mm; left: 2.6mm; border-right: 0; border-bottom: 0; }
+            .ornament-top-right { top: 2.6mm; right: 2.6mm; border-left: 0; border-bottom: 0; transform: scaleX(-1); }
+            .ornament-bottom-left { bottom: 2.6mm; left: 2.6mm; border-right: 0; border-top: 0; transform: scaleY(-1); }
+            .ornament-bottom-right { bottom: 2.6mm; right: 2.6mm; border-left: 0; border-top: 0; transform: scale(-1); }
+
+            .divider {
+              margin: 3.2mm auto 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 6px;
+              color: var(--gold);
+            }
+            .divider span {
+              display: block;
+              width: 16mm;
+              height: 1px;
+              background: linear-gradient(
+                to right,
+                rgba(166, 131, 82, 0),
+                rgba(166, 131, 82, 0.75),
+                rgba(166, 131, 82, 0)
+              );
+            }
+            .divider i {
+              margin: 0;
+              font-style: normal;
+              font-size: 7px;
+              letter-spacing: 0.2em;
+            }
+
+            .card-header {
+              text-align: center;
+              padding: 3mm 1mm 0;
+              position: relative;
+              z-index: 1;
+            }
+
+            .eyebrow {
+              margin: 0;
+              font: 600 7.8px/1.2 "Arial", sans-serif;
+              letter-spacing: 0.24em;
+              text-transform: uppercase;
+              color: #8c7a62;
             }
 
             h1 {
-              margin: 0;
-              text-align: center;
-              font: 400 52px/1 "Brush Script MT", "Segoe Script", cursive;
-              color: #3a2c21;
+              margin: 2.8mm 0 0;
+              font: 600 13.5px/1.14 "Playfair Display", "Times New Roman", serif;
+              letter-spacing: 0.015em;
+              color: #2f2923;
             }
 
             blockquote {
-              margin: 5mm 0 0;
+              margin: 6.5mm 0 0;
               border: 0;
               padding: 0;
               text-align: center;
               white-space: pre-wrap;
-              font: 400 29px/1.28 "Brush Script MT", "Segoe Script", "Times New Roman", cursive;
-              color: #3f3126;
+              font: 500 11.6px/1.45 "Cormorant Garamond", "Times New Roman", serif;
+              color: var(--ink-soft);
+              min-height: 70mm;
+              position: relative;
+              z-index: 1;
             }
 
             footer {
               margin-top: 7mm;
-              border-top: 1px solid rgba(103, 80, 51, 0.24);
-              padding-top: 2.5mm;
+              border-top: 1px solid rgba(133, 106, 74, 0.28);
+              padding-top: 2.8mm;
               display: flex;
-              justify-content: space-between;
-              flex-wrap: wrap;
-              gap: 6px 12px;
-              font: 600 10px/1.2 "Arial", sans-serif;
-              letter-spacing: 0.06em;
+              flex-direction: column;
+              align-items: center;
+              gap: 1.2mm;
+              font: 600 7.6px/1.2 "Arial", sans-serif;
+              letter-spacing: 0.16em;
               text-transform: uppercase;
-              color: #665443;
+              color: #74614a;
+              position: relative;
+              z-index: 1;
+            }
+
+            footer strong {
+              font-size: 8px;
+              letter-spacing: 0.2em;
             }
 
             .actions {
               position: sticky;
               bottom: 0;
-              background: linear-gradient(to top, rgba(246, 241, 236, 0.98), rgba(246, 241, 236, 0));
+              background: linear-gradient(to top, rgba(244, 239, 232, 0.98), rgba(244, 239, 232, 0));
               padding: 14px 8px 8px;
               display: flex;
               justify-content: flex-end;
@@ -497,14 +570,14 @@ export default function Admin({ onExit }: AdminProps) {
               font: 600 13px/1 "Arial", sans-serif;
               cursor: pointer;
             }
-            .print-btn { background: #e11d48; color: #fff; }
+            .print-btn { background: #7a5a2f; color: #fff; }
             .close-btn { background: #e5e7eb; color: #111827; }
 
             @media print {
               body { background: #fff; }
               .page { padding: 0; }
               .actions { display: none; }
-              .kraft-tag { box-shadow: none; }
+              .gift-tag { box-shadow: none; }
             }
           </style>
         </head>
