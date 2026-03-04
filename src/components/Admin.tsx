@@ -38,14 +38,34 @@ interface AdminProps {
 }
 
 const WEDDING_DATE = '24 Abril 2026';
-const WEDDING_TIME = '18h';
-const WEDDING_LOCATION = 'Lourdes Square';
+const WEDDING_TIME = '18h às 21h';
+const WEDDING_LOCATION = 'Lourdes Square Spazio';
 const COUPLE_NAME = 'Janeth & Felipe';
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);
   if (cleaned.length <= 4) return cleaned;
   return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 8)}`;
+};
+
+const parseDeadline = (value?: string): Date | null => {
+  if (!value) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T23:59:59.999-03:00`);
+  }
+
+  const hasTimezone = /(Z|[+-]\d{2}:\d{2})$/.test(value);
+  const normalizedValue = hasTimezone ? value : `${value}-03:00`;
+  const parsed = new Date(normalizedValue);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const formatDeadlineLabel = (value?: string) => {
+  const deadline = parseDeadline(value);
+  if (!deadline) return 'Escaneie para confirmar presença';
+  return `Confirme até ${deadline.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`;
 };
 
 const escapeHtml = (value: string) =>
@@ -57,73 +77,70 @@ const escapeHtml = (value: string) =>
     .replace(/'/g, '&#39;');
 
 const BoardingPassInvite = ({ family }: { family: Family }) => {
+  const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
+  const deadlineLabel = formatDeadlineLabel(rsvpDeadline);
   const inviteUrl =
     typeof window !== 'undefined' && window.location?.origin
       ? `${window.location.origin}/?code=${family.access_code}`
       : family.access_code;
 
   return (
-    <div className="relative w-[900px] h-[600px] rounded-[28px] bg-[#fbf7f2] border border-rose-100 shadow-none overflow-hidden">
-      <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-rose-100/60 blur-3xl" />
-      <div className="absolute -bottom-28 -right-28 h-72 w-72 rounded-full bg-amber-100/50 blur-3xl" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.8)_0,rgba(255,255,255,0.4)_35%,transparent_60%)] opacity-60" />
+    <div className="relative w-[900px] h-[600px] rounded-[28px] overflow-hidden border border-rose-100 bg-[#f6f2ef]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(251,232,236,0.55),transparent_38%),radial-gradient(circle_at_96%_96%,rgba(243,231,205,0.45),transparent_42%)]" />
+      <div className="absolute inset-[24px] rounded-[22px] border border-rose-100 bg-white/70" />
+      <div className="absolute top-[62px] left-0 right-0 text-center">
+        <p className="text-[11px] uppercase tracking-[0.42em] text-rose-400">Recepção de Casamento</p>
+        <h2 className="mt-3 font-serif text-[58px] leading-none text-gray-800">{COUPLE_NAME}</h2>
+      </div>
 
-      <div className="absolute inset-x-12 top-12 border border-rose-100/80 rounded-[22px] h-[520px] bg-white/80 backdrop-blur-sm shadow-none" />
-
-      <div className="absolute inset-x-24 top-20 text-center">
-        <div className="text-[11px] uppercase tracking-[0.4em] text-rose-400">
-          Convite de Casamento
-        </div>
-        <div className="mt-4 font-serif text-4xl text-gray-800">
-          {COUPLE_NAME}
-        </div>
-        <div className="mt-2 text-sm text-gray-500">{family.family_name}</div>
-        <div className="mt-4 text-sm text-gray-500 uppercase tracking-[0.2em]">
-          com amor, convidamos você para celebrar conosco
+      <div className="absolute top-[168px] left-[74px] right-[74px] text-center">
+        <p className="text-[13px] leading-none text-gray-500 uppercase tracking-[0.22em]">
+          Com amor, convidamos você para celebrar conosco
+        </p>
+        <div className="mt-3 flex items-center justify-center gap-6">
+          <div className="h-px w-[34%] bg-rose-200" />
+          <p className="text-rose-400 text-[14px] uppercase tracking-[0.36em] leading-none">Save the Date</p>
+          <div className="h-px w-[34%] bg-rose-200" />
         </div>
       </div>
 
-      <div className="absolute left-24 top-[220px] right-24 flex items-center justify-center gap-6">
-        <div className="h-px flex-1 bg-rose-200/70" />
-        <div className="text-rose-400 text-sm uppercase tracking-[0.35em]">Save the Date</div>
-        <div className="h-px flex-1 bg-rose-200/70" />
-      </div>
-
-      <div className="absolute left-24 top-[270px] right-24 grid grid-cols-3 gap-6 text-center">
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Data</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_DATE}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Hora</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_TIME}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Local</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_LOCATION}</p>
-        </div>
-      </div>
-
-      <div className="absolute left-24 right-24 top-[360px] grid grid-cols-3 gap-6">
-        <div />
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 px-4 py-5 flex flex-col items-center justify-center gap-3 text-center">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-rose-400">
-            Confirme sua presença
+      <div className="absolute top-[226px] left-[74px] right-[74px] px-10 py-8">
+        <div className="grid grid-cols-[1fr,220px] gap-8 items-stretch">
+          <div className="rounded-3xl border border-rose-100 bg-white/85 p-8">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between gap-4 border-b border-rose-100 pb-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Data</span>
+                <span className="font-semibold text-gray-800 text-lg">{WEDDING_DATE}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4 border-b border-rose-100 pb-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Horário</span>
+                <span className="font-semibold text-gray-800 text-lg">{WEDDING_TIME}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Local</span>
+                <span className="font-semibold text-right text-gray-800 text-lg">{WEDDING_LOCATION}</span>
+              </div>
+            </div>
           </div>
-          <QRCodeSVG
-            value={inviteUrl}
-            size={72}
-            bgColor="transparent"
-            fgColor="#1f2937"
-            level="M"
-            includeMargin={false}
-          />
-          <div className="text-xs font-semibold text-gray-700">
-            {formatAccessCode(family.access_code)}
+
+          <div className="rounded-3xl border border-rose-100 bg-[#fffdfb] px-5 py-6 text-center">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">RSVP</p>
+            <div className="mx-auto mt-3 inline-flex rounded-xl bg-white p-3">
+              <QRCodeSVG
+                value={inviteUrl}
+                size={110}
+                bgColor="transparent"
+                fgColor="#374151"
+                level="M"
+                includeMargin={false}
+              />
+            </div>
+            <p className="mt-4 text-sm font-semibold tracking-[0.16em] text-gray-700">{formatAccessCode(family.access_code)}</p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-gray-400">{deadlineLabel}</p>
           </div>
         </div>
-        <div />
       </div>
+
     </div>
   );
 };
@@ -285,7 +302,7 @@ export default function Admin({ onExit }: AdminProps) {
     URL.revokeObjectURL(url);
   };
 
-      const handlePrintMessages = () => {
+  const handlePrintMessages = () => {
     if (familyMessages.length === 0) {
       setFormError('Nenhuma mensagem enviada ainda para impressão.');
       return;
@@ -338,8 +355,8 @@ export default function Admin({ onExit }: AdminProps) {
             * { box-sizing: border-box; }
             body {
               margin: 0;
-              background: #f5f2ed;
-              color: #2a2622;
+              background: #f6f1ec;
+              color: #2f2723;
             }
             .page { padding: 6px; }
             .print-sheet {
@@ -363,7 +380,7 @@ export default function Admin({ onExit }: AdminProps) {
 
             .twine {
               position: absolute;
-              background: #c6ab86;
+              background: #b89667;
               z-index: 0;
             }
             .twine-main {
@@ -376,7 +393,7 @@ export default function Admin({ onExit }: AdminProps) {
             .twine-loop {
               width: 16mm;
               height: 16mm;
-              border: 2px solid #c6ab86;
+              border: 2px solid #b89667;
               border-radius: 50%;
               border-top-color: transparent;
               border-right-color: transparent;
@@ -392,9 +409,9 @@ export default function Admin({ onExit }: AdminProps) {
               min-height: 76mm;
               margin-left: 12mm;
               transform: none;
-              background: #d8be95;
-              border: 1px solid #b99a6f;
-              box-shadow: 0 14px 30px rgba(64, 49, 33, 0.2);
+              background: #e2cba8;
+              border: 1px solid #b69262;
+              box-shadow: 0 14px 30px rgba(67, 48, 26, 0.16);
               padding: 12mm 11mm 8mm 16mm;
               overflow: hidden;
               z-index: 1;
@@ -408,9 +425,9 @@ export default function Admin({ onExit }: AdminProps) {
               height: 4.5mm;
               margin-left: -2.25mm;
               border-radius: 50%;
-              background: #eee9e1;
-              border: 1px solid #a6885e;
-              box-shadow: inset 0 0 0 1px rgba(120, 96, 62, 0.15);
+              background: #f4efe7;
+              border: 1px solid #a68458;
+              box-shadow: inset 0 0 0 1px rgba(126, 97, 58, 0.14);
             }
 
             .tag-grain {
@@ -418,15 +435,15 @@ export default function Admin({ onExit }: AdminProps) {
               inset: 0;
               background-image:
                 radial-gradient(rgba(92, 70, 39, 0.18) 0.55px, transparent 0.75px),
-                radial-gradient(rgba(107, 82, 46, 0.12) 0.45px, transparent 0.7px),
+                radial-gradient(rgba(107, 82, 46, 0.1) 0.45px, transparent 0.7px),
                 repeating-linear-gradient(
                   12deg,
-                  rgba(101, 79, 48, 0.04) 0px,
-                  rgba(101, 79, 48, 0.04) 1px,
+                  rgba(101, 79, 48, 0.03) 0px,
+                  rgba(101, 79, 48, 0.03) 1px,
                   transparent 1px,
                   transparent 4px
                 ),
-                linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(120, 94, 56, 0.08));
+                linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(120, 94, 56, 0.06));
               background-size: 5px 5px, 8px 8px, 100% 100%, 100% 100%;
               background-position: 0 0, 2px 3px, 0 0, 0 0;
               pointer-events: none;
@@ -437,7 +454,7 @@ export default function Admin({ onExit }: AdminProps) {
               margin: 0;
               text-align: center;
               font: 400 52px/1 "Brush Script MT", "Segoe Script", cursive;
-              color: #2f251c;
+              color: #3a2c21;
             }
 
             blockquote {
@@ -447,12 +464,12 @@ export default function Admin({ onExit }: AdminProps) {
               text-align: center;
               white-space: pre-wrap;
               font: 400 29px/1.28 "Brush Script MT", "Segoe Script", "Times New Roman", cursive;
-              color: #3d3329;
+              color: #3f3126;
             }
 
             footer {
               margin-top: 7mm;
-              border-top: 1px solid rgba(103, 80, 51, 0.3);
+              border-top: 1px solid rgba(103, 80, 51, 0.24);
               padding-top: 2.5mm;
               display: flex;
               justify-content: space-between;
@@ -461,13 +478,13 @@ export default function Admin({ onExit }: AdminProps) {
               font: 600 10px/1.2 "Arial", sans-serif;
               letter-spacing: 0.06em;
               text-transform: uppercase;
-              color: #5b4d3f;
+              color: #665443;
             }
 
             .actions {
               position: sticky;
               bottom: 0;
-              background: linear-gradient(to top, rgba(245, 242, 237, 0.98), rgba(245, 242, 237, 0));
+              background: linear-gradient(to top, rgba(246, 241, 236, 0.98), rgba(246, 241, 236, 0));
               padding: 14px 8px 8px;
               display: flex;
               justify-content: flex-end;
@@ -555,7 +572,7 @@ export default function Admin({ onExit }: AdminProps) {
       adminApi.setToken(data.token);
       setSessionEmail(data.email);
       setAuthLoading(false);
-    } catch (err) {
+    } catch {
       setAuthError('Login inválido. Verifique seu email e senha.');
       setAuthLoading(false);
     }
@@ -1017,7 +1034,7 @@ export default function Admin({ onExit }: AdminProps) {
                             setNewMembers([{ name: '' }]);
                           }
                           await loadData();
-                        } catch (err) {
+                        } catch {
                           setFormError('Erro ao remover família.');
                         } finally {
                           setLoading(false);
