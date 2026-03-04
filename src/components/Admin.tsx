@@ -38,14 +38,34 @@ interface AdminProps {
 }
 
 const WEDDING_DATE = '24 Abril 2026';
-const WEDDING_TIME = '18h';
-const WEDDING_LOCATION = 'Lourdes Square';
+const WEDDING_TIME = '18h às 21h';
+const WEDDING_LOCATION = 'Lourdes Square Spazio';
 const COUPLE_NAME = 'Janeth & Felipe';
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);
   if (cleaned.length <= 4) return cleaned;
   return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 8)}`;
+};
+
+const parseDeadline = (value?: string): Date | null => {
+  if (!value) return null;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Date(`${value}T23:59:59.999-03:00`);
+  }
+
+  const hasTimezone = /(Z|[+-]\d{2}:\d{2})$/.test(value);
+  const normalizedValue = hasTimezone ? value : `${value}-03:00`;
+  const parsed = new Date(normalizedValue);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const formatDeadlineLabel = (value?: string) => {
+  const deadline = parseDeadline(value);
+  if (!deadline) return 'Escaneie para confirmar presença';
+  return `Confirme até ${deadline.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })}`;
 };
 
 const escapeHtml = (value: string) =>
@@ -57,73 +77,70 @@ const escapeHtml = (value: string) =>
     .replace(/'/g, '&#39;');
 
 const BoardingPassInvite = ({ family }: { family: Family }) => {
+  const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
+  const deadlineLabel = formatDeadlineLabel(rsvpDeadline);
   const inviteUrl =
     typeof window !== 'undefined' && window.location?.origin
       ? `${window.location.origin}/?code=${family.access_code}`
       : family.access_code;
 
   return (
-    <div className="relative w-[900px] h-[600px] rounded-[28px] bg-[#fbf7f2] border border-rose-100 shadow-none overflow-hidden">
-      <div className="absolute -top-24 -left-24 h-64 w-64 rounded-full bg-rose-100/60 blur-3xl" />
-      <div className="absolute -bottom-28 -right-28 h-72 w-72 rounded-full bg-amber-100/50 blur-3xl" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.8)_0,rgba(255,255,255,0.4)_35%,transparent_60%)] opacity-60" />
+    <div className="relative w-[900px] h-[600px] rounded-[28px] overflow-hidden border border-rose-100 bg-[#f6f2ef]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(251,232,236,0.55),transparent_38%),radial-gradient(circle_at_96%_96%,rgba(243,231,205,0.45),transparent_42%)]" />
+      <div className="absolute inset-[24px] rounded-[22px] border border-rose-100 bg-white/70" />
+      <div className="absolute top-[62px] left-0 right-0 text-center">
+        <p className="text-[11px] uppercase tracking-[0.42em] text-rose-400">Recepção de Casamento</p>
+        <h2 className="mt-3 font-serif text-[58px] leading-none text-gray-800">{COUPLE_NAME}</h2>
+      </div>
 
-      <div className="absolute inset-x-12 top-12 border border-rose-100/80 rounded-[22px] h-[520px] bg-white/80 backdrop-blur-sm shadow-none" />
-
-      <div className="absolute inset-x-24 top-20 text-center">
-        <div className="text-[11px] uppercase tracking-[0.4em] text-rose-400">
-          Convite de Casamento
-        </div>
-        <div className="mt-4 font-serif text-4xl text-gray-800">
-          {COUPLE_NAME}
-        </div>
-        <div className="mt-2 text-sm text-gray-500">{family.family_name}</div>
-        <div className="mt-4 text-sm text-gray-500 uppercase tracking-[0.2em]">
-          com amor, convidamos você para celebrar conosco
+      <div className="absolute top-[196px] left-[74px] right-[74px] text-center">
+        <p className="text-[13px] leading-none text-gray-500 uppercase tracking-[0.22em]">
+          Com amor, convidamos você para celebrar conosco
+        </p>
+        <div className="mt-3 flex items-center justify-center gap-6">
+          <div className="h-px w-[34%] bg-rose-200" />
+          <p className="text-rose-400 text-[14px] uppercase tracking-[0.36em] leading-none">Save the Date</p>
+          <div className="h-px w-[34%] bg-rose-200" />
         </div>
       </div>
 
-      <div className="absolute left-24 top-[220px] right-24 flex items-center justify-center gap-6">
-        <div className="h-px flex-1 bg-rose-200/70" />
-        <div className="text-rose-400 text-sm uppercase tracking-[0.35em]">Save the Date</div>
-        <div className="h-px flex-1 bg-rose-200/70" />
-      </div>
-
-      <div className="absolute left-24 top-[270px] right-24 grid grid-cols-3 gap-6 text-center">
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Data</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_DATE}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Hora</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_TIME}</p>
-        </div>
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 p-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">Local</p>
-          <p className="mt-2 text-lg font-semibold text-gray-800">{WEDDING_LOCATION}</p>
-        </div>
-      </div>
-
-      <div className="absolute left-24 right-24 top-[360px] grid grid-cols-3 gap-6">
-        <div />
-        <div className="rounded-2xl bg-rose-50/70 border border-rose-100 px-4 py-5 flex flex-col items-center justify-center gap-3 text-center">
-          <div className="text-[10px] uppercase tracking-[0.3em] text-rose-400">
-            Confirme sua presença
+      <div className="absolute top-[226px] left-[74px] right-[74px] px-10 py-8">
+        <div className="grid grid-cols-[1fr,220px] gap-8 items-stretch">
+          <div className="rounded-3xl border border-rose-100 bg-white/85 p-8">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between gap-4 border-b border-rose-100 pb-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Data</span>
+                <span className="font-semibold text-gray-800 text-lg">{WEDDING_DATE}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4 border-b border-rose-100 pb-3">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Horário</span>
+                <span className="font-semibold text-gray-800 text-lg">{WEDDING_TIME}</span>
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <span className="text-xs uppercase tracking-[0.2em] text-rose-300">Local</span>
+                <span className="font-semibold text-right text-gray-800 text-lg">{WEDDING_LOCATION}</span>
+              </div>
+            </div>
           </div>
-          <QRCodeSVG
-            value={inviteUrl}
-            size={72}
-            bgColor="transparent"
-            fgColor="#1f2937"
-            level="M"
-            includeMargin={false}
-          />
-          <div className="text-xs font-semibold text-gray-700">
-            {formatAccessCode(family.access_code)}
+
+          <div className="rounded-3xl border border-rose-100 bg-[#fffdfb] px-5 py-6 text-center">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-rose-400">RSVP</p>
+            <div className="mx-auto mt-3 inline-flex rounded-xl bg-white p-3">
+              <QRCodeSVG
+                value={inviteUrl}
+                size={110}
+                bgColor="transparent"
+                fgColor="#374151"
+                level="M"
+                includeMargin={false}
+              />
+            </div>
+            <p className="mt-4 text-sm font-semibold tracking-[0.16em] text-gray-700">{formatAccessCode(family.access_code)}</p>
+            <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-gray-400">{deadlineLabel}</p>
           </div>
         </div>
-        <div />
       </div>
+
     </div>
   );
 };
@@ -285,7 +302,7 @@ export default function Admin({ onExit }: AdminProps) {
     URL.revokeObjectURL(url);
   };
 
-      const handlePrintMessages = () => {
+  const handlePrintMessages = () => {
     if (familyMessages.length === 0) {
       setFormError('Nenhuma mensagem enviada ainda para impressão.');
       return;
@@ -555,7 +572,7 @@ export default function Admin({ onExit }: AdminProps) {
       adminApi.setToken(data.token);
       setSessionEmail(data.email);
       setAuthLoading(false);
-    } catch (err) {
+    } catch {
       setAuthError('Login inválido. Verifique seu email e senha.');
       setAuthLoading(false);
     }
@@ -1017,7 +1034,7 @@ export default function Admin({ onExit }: AdminProps) {
                             setNewMembers([{ name: '' }]);
                           }
                           await loadData();
-                        } catch (err) {
+                        } catch {
                           setFormError('Erro ao remover família.');
                         } finally {
                           setLoading(false);
