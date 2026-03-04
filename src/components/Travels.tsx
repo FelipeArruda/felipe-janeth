@@ -43,11 +43,13 @@ export default function Travels() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {destinations.map((destination, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-300 cursor-pointer h-80"
+              className={`group relative overflow-hidden rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-300 cursor-pointer h-80 ${
+                index < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
+              }`}
             >
               <img
                 src={destination.image}
