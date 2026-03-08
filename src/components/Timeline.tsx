@@ -35,7 +35,7 @@ export default function Timeline() {
       icon: Baby,
       title: 'Benício a caminho',
       date: '2025 -2026',
-      description: 'Esperando nosso primeiro filho, que chegara em breve',
+      description: 'Estamos esperando nosso primeiro filho que chegará em breve',
       color: 'bg-blue-500',
     },
   ];
