@@ -41,7 +41,8 @@ const WEDDING_DATE = '24 Abril 2026';
 const WEDDING_TIME = '18h às 21h';
 const WEDDING_LOCATION = 'Lourdes Square Spazio';
 const COUPLE_NAME = 'Janeth & Felipe';
-const INVITE_SITE_URL = 'https://janethandfelipe.felipearruda.dev.br';
+const INVITE_SITE_URL =
+  (import.meta.env.INVITE_SITE_URL as string | undefined) || window.location.origin;
 
 const formatAccessCode = (value: string) => {
   const cleaned = value.replace(/\D/g, '').slice(0, 8);
