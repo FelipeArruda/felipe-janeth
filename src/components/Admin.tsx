@@ -319,7 +319,6 @@ export default function Admin({ onExit }: AdminProps) {
           <section class="print-sheet">
             <article class="tag-scene">
               <div class="gift-tag">
-                <div class="tag-hole"></div>
                 <div class="frame-inner">
                   <div class="ornament ornament-top-left"></div>
                   <div class="ornament ornament-top-right"></div>
@@ -417,20 +416,6 @@ export default function Admin({ onExit }: AdminProps) {
               border: 1px solid rgba(140, 118, 87, 0.24);
               border-radius: 1.8mm;
               pointer-events: none;
-            }
-
-            .tag-hole {
-              position: absolute;
-              left: 50%;
-              top: 4mm;
-              width: 5.2mm;
-              height: 5.2mm;
-              margin-left: -2.6mm;
-              border-radius: 50%;
-              background: #ece3d8;
-              border: 1px solid #9e876a;
-              box-shadow: inset 0 0 0 1px rgba(146, 123, 96, 0.2);
-              z-index: 2;
             }
 
             .frame-inner {
