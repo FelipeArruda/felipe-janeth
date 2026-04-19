@@ -326,7 +326,6 @@ export default function Admin({ onExit }: AdminProps) {
                   <div class="ornament ornament-bottom-left"></div>
                   <div class="ornament ornament-bottom-right"></div>
                   <header class="card-header">
-                    <p class="eyebrow">Mensagem Especial</p>
                     <h1>${escapeHtml(item.familyName)}</h1>
                     <div class="divider">
                       <span></span>
@@ -453,9 +452,11 @@ export default function Admin({ onExit }: AdminProps) {
               position: absolute;
               width: 10mm;
               height: 10mm;
-              border: 1px solid rgba(166, 131, 82, 0.42);
+              border-top: 1px solid rgba(166, 131, 82, 0.42);
+              border-left: 1px solid rgba(166, 131, 82, 0.42);
               border-radius: 1px;
               pointer-events: none;
+              transform-origin: center;
             }
             .ornament::before,
             .ornament::after {
@@ -466,12 +467,12 @@ export default function Admin({ onExit }: AdminProps) {
               height: 5.6mm;
               transform: rotate(45deg);
             }
-            .ornament::before { top: -3.7mm; left: 2.2mm; }
-            .ornament::after { top: 2.2mm; left: -3.7mm; }
-            .ornament-top-left { top: 2.6mm; left: 2.6mm; border-right: 0; border-bottom: 0; }
-            .ornament-top-right { top: 2.6mm; right: 2.6mm; border-left: 0; border-bottom: 0; transform: scaleX(-1); }
-            .ornament-bottom-left { bottom: 2.6mm; left: 2.6mm; border-right: 0; border-top: 0; transform: scaleY(-1); }
-            .ornament-bottom-right { bottom: 2.6mm; right: 2.6mm; border-left: 0; border-top: 0; transform: scale(-1); }
+            .ornament::before { bottom: -3.7mm; right: 2.2mm; }
+            .ornament::after { bottom: 2.2mm; right: -3.7mm; }
+            .ornament-top-left { top: 2.6mm; left: 2.6mm; transform: rotate(180deg); }
+            .ornament-top-right { top: 2.6mm; right: 2.6mm; transform: rotate(270deg); }
+            .ornament-bottom-left { bottom: 2.6mm; left: 2.6mm; transform: rotate(90deg); }
+            .ornament-bottom-right { bottom: 2.6mm; right: 2.6mm; transform: rotate(0deg); }
 
             .divider {
               margin: 3.2mm auto 0;
