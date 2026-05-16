@@ -1,4 +1,4 @@
-﻿import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { Pool } from 'pg';
 
 const email = process.env.ADMIN_EMAIL;

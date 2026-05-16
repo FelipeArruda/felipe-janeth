@@ -1,4 +1,4 @@
-﻿-- Add admin fields and policies for guest management
+-- Add admin fields and policies for guest management
 
 ALTER TABLE guest_families
   ADD COLUMN IF NOT EXISTS phone text,

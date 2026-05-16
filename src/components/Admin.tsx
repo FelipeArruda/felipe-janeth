@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState, FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, FormEvent } from 'react';
 import { Key, LogOut, Pencil, Plus, Printer, Trash2, UserPlus } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';

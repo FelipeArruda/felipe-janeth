@@ -1,4 +1,4 @@
-﻿import { Calendar, MapPin, Clock } from 'lucide-react';
+import { Calendar, MapPin, Clock } from 'lucide-react';
 
 interface SaveTheDateProps {
   onRSVPClick: () => void;

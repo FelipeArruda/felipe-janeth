@@ -1,4 +1,4 @@
-﻿import { chromium } from 'playwright';
+import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 

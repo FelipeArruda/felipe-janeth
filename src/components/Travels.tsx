@@ -1,4 +1,4 @@
-﻿import { MapPin, Plane } from 'lucide-react';
+import { MapPin, Plane } from 'lucide-react';
 
 export default function Travels() {
   const destinations = [
