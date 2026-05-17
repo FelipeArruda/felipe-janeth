@@ -429,6 +429,32 @@ const start = async () => {
     }
   });
 
+  app.get('/api/gallery-photos', async (_req, res) => {
+    const galleryDir = path.join(__dirname, '../public/gallery');
+
+    try {
+      if (!fs.existsSync(galleryDir)) {
+        return res.json({ photos: [] });
+      }
+
+      const files = fs.readdirSync(galleryDir);
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+      const photos = files
+        .filter((file) => imageExtensions.includes(path.extname(file).toLowerCase()))
+        .sort()
+        .map((file) => ({
+          name: file,
+          path: `/gallery/${file}`,
+        }));
+
+      return res.json({ photos });
+    } catch (err) {
+      console.error('Error reading gallery:', err);
+      return res.json({ photos: [] });
+    }
+  });
+
   const distDir = path.join(__dirname, '../dist');
   if (fs.existsSync(distDir)) {
     app.use(express.static(distDir));
