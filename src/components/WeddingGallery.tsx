@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 interface Photo {
@@ -6,27 +6,85 @@ interface Photo {
   path: string;
 }
 
+const isHeroPhoto = (photo: Photo) => photo.name.trim().toLowerCase() === 'hero.jpg';
+
 export default function WeddingGallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
+  const [columnCount, setColumnCount] = useState(1);
+  const apiBase = useMemo(() => '', []);
+
+  useEffect(() => {
+    const updateColumnCount = () => {
+      const width = window.innerWidth;
+      if (width >= 1280) {
+        setColumnCount(4);
+      } else if (width >= 1024) {
+        setColumnCount(3);
+      } else if (width >= 640) {
+        setColumnCount(2);
+      } else {
+        setColumnCount(1);
+      }
+    };
+
+    updateColumnCount();
+    window.addEventListener('resize', updateColumnCount);
+    return () => window.removeEventListener('resize', updateColumnCount);
+  }, []);
 
   useEffect(() => {
     const loadPhotos = async () => {
       try {
-        const response = await fetch('/api/gallery-photos');
+        const response = await fetch(`${apiBase}/api/gallery-photos`);
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
         const data = await response.json();
-        setPhotos(data.photos || []);
+        const apiPhotos = Array.isArray(data?.photos) ? data.photos.filter((photo: Photo) => !isHeroPhoto(photo)) : [];
+
+        if (apiPhotos.length > 0) {
+          setPhotos(apiPhotos);
+          return;
+        }
+
+        const fallbackResponse = await fetch('/gallery/gallery.json');
+        if (!fallbackResponse.ok) {
+          setPhotos([]);
+          return;
+        }
+
+        const fallbackData = await fallbackResponse.json();
+        const fallbackPhotos = Array.isArray(fallbackData?.photos)
+          ? fallbackData.photos.filter((photo: Photo) => !isHeroPhoto(photo))
+          : [];
+        setPhotos(fallbackPhotos);
       } catch (error) {
-        console.error('Error loading gallery photos:', error);
-        setPhotos([]);
+        try {
+          const fallbackResponse = await fetch('/gallery/gallery.json');
+          if (!fallbackResponse.ok) {
+            setPhotos([]);
+          } else {
+            const fallbackData = await fallbackResponse.json();
+            const fallbackPhotos = Array.isArray(fallbackData?.photos)
+              ? fallbackData.photos.filter((photo: Photo) => !isHeroPhoto(photo))
+              : [];
+            setPhotos(fallbackPhotos);
+          }
+        } catch (fallbackError) {
+          console.error('Error loading gallery photos:', error, fallbackError);
+          setPhotos([]);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     loadPhotos();
-  }, []);
+  }, [apiBase]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -54,13 +112,24 @@ export default function WeddingGallery() {
     document.body.removeChild(link);
   };
 
-  const downloadAllPhotos = () => {
+  const balancedColumns = useMemo(() => {
+    const columns: Array<Array<{ photo: Photo; index: number }>> = Array.from({ length: columnCount }, () => []);
+    const heights = Array.from({ length: columnCount }, () => 0);
+
     photos.forEach((photo, index) => {
-      setTimeout(() => {
-        downloadPhoto(photo);
-      }, index * 200);
+      let target = 0;
+      for (let i = 1; i < columnCount; i += 1) {
+        if (heights[i] < heights[target]) target = i;
+      }
+
+      const ratio = imageRatios[photo.path] || 1.3;
+      columns[target].push({ photo, index });
+      heights[target] += ratio + 0.1;
     });
-  };
+
+    return columns;
+  }, [photos, imageRatios, columnCount]);
+  const hasPhotos = photos.length > 0;
 
   if (loading) {
     return (
@@ -74,109 +143,124 @@ export default function WeddingGallery() {
     );
   }
 
-  if (photos.length === 0) {
-    return null;
-  }
-
   return (
     <>
-      {/* Decorative Separator */}
-      <div className="flex justify-center items-center py-8 px-4">
-        <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent"></div>
-        <div className="px-4 text-rose-400 text-2xl">♥</div>
-        <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent"></div>
+      <div className="flex justify-center items-center pt-6 pb-2 px-4">
+        <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
+        <div className="px-4 text-rose-400 text-2xl">&hearts;</div>
+        <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent via-rose-400 to-transparent" />
       </div>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="pt-8 pb-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-12 animate-fade-in">
+          <div className="text-center mb-12">
             <div className="mb-4">
-              <h2 className="font-serif text-5xl md:text-6xl text-gray-900 mb-2">
-                Momentos do Nosso Dia
-              </h2>
-              <div className="w-24 h-1 bg-rose-400 mx-auto"></div>
+              <p className="uppercase tracking-[0.3em] text-rose-400 text-xs sm:text-sm mb-3">Janeth & Felipe</p>
+              <h2 className="font-serif text-4xl md:text-6xl text-gray-900 mb-2">Momentos do nosso dia</h2>
+              <div className="w-24 h-1 bg-rose-400 mx-auto" />
             </div>
-            <p className="text-gray-600 text-lg mt-6">
-              Reviva os melhores momentos do nosso casamento
-            </p>
-            {photos.length > 0 && (
-              <button
-                onClick={downloadAllPhotos}
-                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-rose-400 text-white rounded-lg hover:bg-rose-500 transition-colors duration-200 font-medium"
-              >
-                <Download size={20} />
-                Baixar todas as fotos
-              </button>
-            )}
+            <p className="text-gray-600 text-lg mt-6">Reviva os melhores momentos do nosso casamento</p>
           </div>
 
-          {/* Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {photos.map((photo, index) => (
-              <div
-                key={index}
-                className="group relative aspect-square overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer bg-gray-100"
-                onClick={() => setSelectedIndex(index)}
-              >
-                {/* Image */}
-                <img
-                  src={photo.path}
-                  alt={`Foto do casamento ${index + 1}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-3">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadPhoto(photo);
-                      }}
-                      className="p-3 bg-white rounded-full hover:bg-rose-50 transition-colors duration-200 shadow-lg"
-                      title="Baixar foto"
+          {hasPhotos ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 items-start">
+              {balancedColumns.map((column, colIndex) => (
+                <div key={`col-${colIndex}`} className="flex flex-col gap-4 sm:gap-6">
+                  {column.map(({ photo, index }) => (
+                    <div
+                      key={photo.path}
+                      className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer"
+                      onClick={() => setSelectedIndex(index)}
                     >
-                      <Download size={24} className="text-rose-400" />
-                    </button>
-                  </div>
-                </div>
+                      {!loadedImages[photo.path] && (
+                        <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-rose-100 via-rose-50 to-white" />
+                      )}
 
-                {/* Index indicator on hover */}
-                <div className="absolute top-3 right-3 px-3 py-1 bg-white/90 rounded-full text-sm font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  {index + 1} / {photos.length}
+                      <img
+                        src={photo.path}
+                        alt={`Foto do casamento ${index + 1}`}
+                        loading="lazy"
+                        onLoad={(e) => {
+                          setLoadedImages((prev) => ({
+                            ...prev,
+                            [photo.path]: true,
+                          }));
+                          const { naturalWidth, naturalHeight } = e.currentTarget;
+                          if (naturalWidth > 0 && naturalHeight > 0) {
+                            setImageRatios((prev) => ({
+                              ...prev,
+                              [photo.path]: naturalHeight / naturalWidth,
+                            }));
+                          }
+                        }}
+                        className={`w-full h-auto group-hover:scale-105 transition-all duration-300 ${
+                          loadedImages[photo.path] ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
+                        }`}
+                      />
+
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              downloadPhoto(photo);
+                            }}
+                            className="p-3 bg-white rounded-full hover:bg-rose-50 transition-colors duration-200 shadow-lg"
+                            title="Baixar foto"
+                          >
+                            <Download size={24} className="text-rose-400" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="absolute top-3 right-3 px-3 py-1 bg-white/90 rounded-full text-sm font-medium text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {index + 1} / {photos.length}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-rose-100 bg-rose-50/60 p-8 text-center">
+              <p className="text-gray-700 font-medium">Nenhuma foto encontrada na galeria.</p>
+              <p className="text-gray-500 text-sm mt-2">
+                Adicione imagens em <code>/public/gallery</code> para exibir aqui.
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Lightbox */}
         {selectedIndex !== null && (
-          <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
-            {/* Close button */}
+          <div
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+            onClick={() => setSelectedIndex(null)}
+          >
             <button
-              onClick={() => setSelectedIndex(null)}
-              className="absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-full transition-colors duration-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedIndex(null);
+              }}
+              className="absolute top-4 right-4 z-[70] p-2 text-white hover:bg-white/10 rounded-full transition-colors duration-200"
               title="Fechar (ESC)"
             >
               <X size={32} />
             </button>
 
-            {/* Image container */}
-            <div className="relative w-full h-full flex items-center justify-center">
+            <div
+              className="relative w-full h-full flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
               <img
                 src={photos[selectedIndex].path}
                 alt={`Foto ${selectedIndex + 1}`}
                 className="max-w-full max-h-full object-contain"
               />
 
-              {/* Photo counter */}
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white text-sm font-medium">
                 {selectedIndex + 1} / {photos.length}
               </div>
 
-              {/* Download button in lightbox */}
               <button
                 onClick={() => downloadPhoto(photos[selectedIndex])}
                 className="absolute bottom-4 right-4 p-3 bg-rose-400 text-white rounded-full hover:bg-rose-500 transition-colors duration-200 shadow-lg"
@@ -186,25 +270,26 @@ export default function WeddingGallery() {
               </button>
             </div>
 
-            {/* Navigation buttons */}
             {photos.length > 1 && (
               <>
                 <button
-                  onClick={() =>
-                    setSelectedIndex((prev) => (prev! > 0 ? prev! - 1 : photos.length - 1))
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedIndex((prev) => (prev! > 0 ? prev! - 1 : photos.length - 1));
+                  }}
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors duration-200 backdrop-blur-sm"
-                  title="Foto anterior (← seta)"
+                  title="Foto anterior (seta esquerda)"
                 >
                   <ChevronLeft size={28} />
                 </button>
 
                 <button
-                  onClick={() =>
-                    setSelectedIndex((prev) => (prev! < photos.length - 1 ? prev! + 1 : 0))
-                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedIndex((prev) => (prev! < photos.length - 1 ? prev! + 1 : 0));
+                  }}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors duration-200 backdrop-blur-sm"
-                  title="Próxima foto (→ seta)"
+                  title="Proxima foto (seta direita)"
                 >
                   <ChevronRight size={28} />
                 </button>
