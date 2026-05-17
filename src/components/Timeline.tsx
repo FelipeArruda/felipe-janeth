@@ -1,4 +1,4 @@
-﻿import { Briefcase, Heart, Baby, Home } from 'lucide-react';
+import { Briefcase, Heart, Baby, Home } from 'lucide-react';
 
 type Milestone = {
   icon: typeof Heart;

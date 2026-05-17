@@ -1,4 +1,4 @@
-﻿import { useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { CheckCircle, Heart } from 'lucide-react';
 import { publicApi } from '../lib/api';
 

@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
@@ -386,6 +386,32 @@ const start = async () => {
     } catch (err) {
       console.error('Error:', err);
       return res.status(500).json({ error: 'Erro ao salvar confirmações.' });
+    }
+  });
+
+  app.get('/api/gallery-photos', async (_req, res) => {
+    const galleryDir = path.join(__dirname, '../public/gallery');
+
+    try {
+      if (!fs.existsSync(galleryDir)) {
+        return res.json({ photos: [] });
+      }
+
+      const files = fs.readdirSync(galleryDir);
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+      const photos = files
+        .filter((file) => imageExtensions.includes(path.extname(file).toLowerCase()))
+        .sort()
+        .map((file) => ({
+          name: file,
+          path: `/gallery/${file}`,
+        }));
+
+      return res.json({ photos });
+    } catch (err) {
+      console.error('Error reading gallery:', err);
+      return res.json({ photos: [] });
     }
   });
 

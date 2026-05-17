@@ -1,4 +1,4 @@
-﻿import { Gift } from 'lucide-react';
+import { Gift } from 'lucide-react';
 
 const AMAZON_LIST_URL =
   'https://www.amazon.com.br/hz/wishlist/ls/YBNA9SEONVOM?ref_=wl_share';
