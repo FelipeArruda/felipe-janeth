@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Hero from './components/Hero';
+import WeddingGallery from './components/WeddingGallery';
 import Story from './components/Story';
 import Timeline from './components/Timeline';
 import Travels from './components/Travels';
@@ -99,6 +100,7 @@ function App() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-rose-50">
         <Hero />
+        <WeddingGallery />
         <Story />
         <Timeline />
         <Travels />
