@@ -106,10 +106,15 @@ export default function WeddingGallery() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, photos.length]);
 
-  const downloadPhoto = (photo: Photo) => {
+  const downloadPhoto = (photo: Photo, index: number) => {
+    const extensionMatch = photo.name.toLowerCase().match(/\.[a-z0-9]+$/);
+    const extension = extensionMatch ? extensionMatch[0] : '.jpg';
+    const sequence = String(index + 1).padStart(2, '0');
+    const downloadName = `janeth-felipe-${sequence}${extension}`;
+
     const link = document.createElement('a');
     link.href = photo.path;
-    link.download = photo.name;
+    link.download = downloadName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -205,7 +210,7 @@ export default function WeddingGallery() {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              downloadPhoto(photo);
+                              downloadPhoto(photo, index);
                             }}
                             className="p-3 bg-white rounded-full hover:bg-rose-50 transition-colors duration-200 shadow-lg"
                             title="Baixar foto"
@@ -264,7 +269,7 @@ export default function WeddingGallery() {
               </div>
 
               <button
-                onClick={() => downloadPhoto(photos[selectedIndex])}
+                onClick={() => downloadPhoto(photos[selectedIndex], selectedIndex)}
                 className="absolute bottom-4 right-4 p-3 bg-rose-400 text-white rounded-full hover:bg-rose-500 transition-colors duration-200 shadow-lg"
                 title="Baixar foto"
               >
