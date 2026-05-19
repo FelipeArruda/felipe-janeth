@@ -4,7 +4,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: 'url(/gallery/hero.jpg)',
+          backgroundImage: 'url(/gallery/hero.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center 38%',
         }}
