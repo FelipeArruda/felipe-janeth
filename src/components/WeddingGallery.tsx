@@ -6,7 +6,10 @@ interface Photo {
   path: string;
 }
 
-const isHeroPhoto = (photo: Photo) => photo.name.trim().toLowerCase() === 'hero.jpg';
+const isHeroPhoto = (photo: Photo) => {
+  const normalizedName = photo.name.trim().toLowerCase();
+  return normalizedName === 'hero.jpg' || normalizedName === 'hero.png';
+};
 
 export default function WeddingGallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -156,10 +159,9 @@ export default function WeddingGallery() {
           <div className="text-center mb-12">
             <div className="mb-4">
               <p className="uppercase tracking-[0.3em] text-rose-400 text-xs sm:text-sm mb-3">Janeth & Felipe</p>
-              <h2 className="font-serif text-4xl md:text-6xl text-gray-900 mb-2">Momentos do nosso dia</h2>
+              <h2 className="font-serif text-4xl md:text-6xl text-gray-900 mb-2">24.04.2026</h2>
               <div className="w-24 h-1 bg-rose-400 mx-auto" />
             </div>
-            <p className="text-gray-600 text-lg mt-6">Reviva os melhores momentos do nosso casamento</p>
           </div>
 
           {hasPhotos ? (

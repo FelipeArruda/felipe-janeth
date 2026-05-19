@@ -145,6 +145,7 @@ const start = async () => {
       const galleryDir = path.join(__dirname, '../public/gallery');
       const publicDir = path.join(__dirname, '../public');
       const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
+      const excludedNames = new Set(['hero.jpg', 'hero.png']);
 
       const mapImageFile = (dir, basePath) =>
         fs
@@ -152,6 +153,7 @@ const start = async () => {
           .filter((entry) => entry.isFile())
           .map((entry) => entry.name)
           .filter((name) => allowedExtensions.has(path.extname(name).toLowerCase()))
+          .filter((name) => !excludedNames.has(name.trim().toLowerCase()))
           .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
           .map((name) => ({
             name,
@@ -439,9 +441,11 @@ const start = async () => {
 
       const files = fs.readdirSync(galleryDir);
       const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+      const excludedNames = new Set(['hero.jpg', 'hero.png']);
 
       const photos = files
         .filter((file) => imageExtensions.includes(path.extname(file).toLowerCase()))
+        .filter((file) => !excludedNames.has(file.trim().toLowerCase()))
         .sort()
         .map((file) => ({
           name: file,
