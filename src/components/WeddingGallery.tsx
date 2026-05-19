@@ -158,7 +158,7 @@ export default function WeddingGallery() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <div className="mb-4">
-              <p className="uppercase tracking-[0.3em] text-rose-400 text-xs sm:text-sm mb-3">Janeth & Felipe</p>
+              <p className="uppercase tracking-[0.22em] text-rose-400 text-base sm:text-lg mb-3">Janeth & Felipe</p>
               <h2 className="font-serif text-4xl md:text-6xl text-gray-900 mb-2">24.04.2026</h2>
               <div className="w-24 h-1 bg-rose-400 mx-auto" />
             </div>
