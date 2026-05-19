@@ -140,6 +140,48 @@ const start = async () => {
     res.json({ ok: true });
   });
 
+  app.get('/api/gallery-photos', (_req, res) => {
+    try {
+      const galleryDir = path.join(__dirname, '../public/gallery');
+      const publicDir = path.join(__dirname, '../public');
+      const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
+      const excludedNames = new Set(['hero.jpg', 'hero.png']);
+
+      const mapImageFile = (dir, basePath) =>
+        fs
+          .readdirSync(dir, { withFileTypes: true })
+          .filter((entry) => entry.isFile())
+          .map((entry) => entry.name)
+          .filter((name) => allowedExtensions.has(path.extname(name).toLowerCase()))
+          .filter((name) => !excludedNames.has(name.trim().toLowerCase()))
+          .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }))
+          .map((name) => ({
+            name,
+            path: `${basePath}/${encodeURIComponent(name)}`,
+          }));
+
+      if (!fs.existsSync(galleryDir)) {
+        const fallbackPhotos = fs.existsSync(publicDir) ? mapImageFile(publicDir, '') : [];
+        return res.json({ photos: fallbackPhotos });
+      }
+
+      const galleryPhotos = mapImageFile(galleryDir, '/gallery');
+      if (galleryPhotos.length > 0) {
+        return res.json({ photos: galleryPhotos });
+      }
+
+      const fallbackPhotos = fs.existsSync(publicDir) ? mapImageFile(publicDir, '') : [];
+      const filteredFallback = fallbackPhotos.filter(
+        (photo) => !photo.path.startsWith('/templates/') && !photo.path.startsWith('/enquadradas/')
+      );
+
+      return res.json({ photos: filteredFallback });
+    } catch (error) {
+      console.error('Error loading gallery photos:', error);
+      return res.status(500).json({ error: 'Erro ao carregar galeria.' });
+    }
+  });
+
   app.post('/api/admin/login', async (req, res) => {
     const { email, password } = req.body || {};
     if (!email || !password) {
@@ -399,9 +441,11 @@ const start = async () => {
 
       const files = fs.readdirSync(galleryDir);
       const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+      const excludedNames = new Set(['hero.jpg', 'hero.png']);
 
       const photos = files
         .filter((file) => imageExtensions.includes(path.extname(file).toLowerCase()))
+        .filter((file) => !excludedNames.has(file.trim().toLowerCase()))
         .sort()
         .map((file) => ({
           name: file,

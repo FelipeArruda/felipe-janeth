@@ -1,0 +1,28 @@
+{
+    "photos":  [
+                   {
+                       "name":  "Civil-27.jpg",
+                       "path":  "/gallery/Civil-27.jpg"
+                   },
+                   {
+                       "name":  "Civil-352.jpg",
+                       "path":  "/gallery/Civil-352.jpg"
+                   },
+                   {
+                       "name":  "hero.jpg",
+                       "path":  "/gallery/hero.jpg"
+                   },
+                   {
+                       "name":  "Recepção-208.jpg",
+                       "path":  "/gallery/Recepc%CC%A7a%CC%83o-208.jpg"
+                   },
+                   {
+                       "name":  "recepcao-54.jpg",
+                       "path":  "/gallery/recepcao-54.jpg"
+                   },
+                   {
+                       "name":  "Recepção-54.jpg",
+                       "path":  "/gallery/Recepc%CC%A7a%CC%83o-54.jpg"
+                   }
+               ]
+}

@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
 import Hero from './components/Hero';
 import WeddingGallery from './components/WeddingGallery';
-import Story from './components/Story';
-import Timeline from './components/Timeline';
-import Travels from './components/Travels';
-import Family from './components/Family';
-import GiftRegistry from './components/GiftRegistry';
 import RSVPAccess from './components/RSVPAccess';
 import RSVP from './components/RSVP';
-import SaveTheDate from './components/SaveTheDate';
-import Footer from './components/Footer';
 import Admin from './components/Admin';
 
 interface FamilyMember {
@@ -24,7 +17,6 @@ interface ExistingConfirmation {
 }
 
 function App() {
-  const rsvpDeadline = import.meta.env.VITE_RSVP_DEADLINE as string | undefined;
   const [mode, setMode] = useState<'site' | 'admin'>(() =>
     window.location.hash === '#admin' ? 'admin' : 'site'
   );
@@ -101,16 +93,6 @@ function App() {
       <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-rose-50">
         <Hero />
         <WeddingGallery />
-        <Story />
-        <Timeline />
-        <Travels />
-        <Family />
-        <GiftRegistry />
-        <SaveTheDate
-          onRSVPClick={() => setRsvpState({ stage: 'access' })}
-          rsvpDeadline={rsvpDeadline}
-        />
-        <Footer />
       </div>
     );
   }
