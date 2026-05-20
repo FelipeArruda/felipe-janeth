@@ -28,9 +28,15 @@ services:
       NODE_ENV: development
       PORT: 5174
       DATABASE_URL: postgresql://felipe:felipe123@postgres:5432/felipe_janeth
-      ADMIN_JWT_SECRET: dev-secret-change-me
-      ADMIN_EMAIL: admin@local
-      ADMIN_PASSWORD: admin123
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-dev-secret-change-me}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME}
+      R2_ENDPOINT: ${R2_ENDPOINT}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL}
     depends_on:
       postgres:
         condition: service_healthy

@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 
 interface Photo {
+  id?: number;
   name: string;
   path: string;
+  file_url?: string;
 }
 
 const isHeroPhoto = (photo: Photo) => {
@@ -48,39 +50,10 @@ export default function WeddingGallery() {
         }
         const data = await response.json();
         const apiPhotos = Array.isArray(data?.photos) ? data.photos.filter((photo: Photo) => !isHeroPhoto(photo)) : [];
-
-        if (apiPhotos.length > 0) {
-          setPhotos(apiPhotos);
-          return;
-        }
-
-        const fallbackResponse = await fetch('/gallery/gallery.json');
-        if (!fallbackResponse.ok) {
-          setPhotos([]);
-          return;
-        }
-
-        const fallbackData = await fallbackResponse.json();
-        const fallbackPhotos = Array.isArray(fallbackData?.photos)
-          ? fallbackData.photos.filter((photo: Photo) => !isHeroPhoto(photo))
-          : [];
-        setPhotos(fallbackPhotos);
+        setPhotos(apiPhotos);
       } catch (error) {
-        try {
-          const fallbackResponse = await fetch('/gallery/gallery.json');
-          if (!fallbackResponse.ok) {
-            setPhotos([]);
-          } else {
-            const fallbackData = await fallbackResponse.json();
-            const fallbackPhotos = Array.isArray(fallbackData?.photos)
-              ? fallbackData.photos.filter((photo: Photo) => !isHeroPhoto(photo))
-              : [];
-            setPhotos(fallbackPhotos);
-          }
-        } catch (fallbackError) {
-          console.error('Error loading gallery photos:', error, fallbackError);
-          setPhotos([]);
-        }
+        console.error('Error loading gallery photos:', error);
+        setPhotos([]);
       } finally {
         setLoading(false);
       }
@@ -106,18 +79,32 @@ export default function WeddingGallery() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedIndex, photos.length]);
 
-  const downloadPhoto = (photo: Photo, index: number) => {
+  const downloadPhoto = async (photo: Photo, index: number) => {
     const extensionMatch = photo.name.toLowerCase().match(/\.[a-z0-9]+$/);
     const extension = extensionMatch ? extensionMatch[0] : '.jpg';
     const sequence = String(index + 1).padStart(2, '0');
     const downloadName = `janeth-felipe-${sequence}${extension}`;
+    const sourceUrl = photo.id ? `/api/gallery-photos/${photo.id}/download` : (photo.file_url || photo.path);
 
-    const link = document.createElement('a');
-    link.href = photo.path;
-    link.download = downloadName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      const response = await fetch(sourceUrl, { mode: 'cors' });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+      console.error('Error downloading photo:', error);
+      window.open(sourceUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const balancedColumns = useMemo(() => {
@@ -232,7 +219,7 @@ export default function WeddingGallery() {
             <div className="rounded-2xl border border-rose-100 bg-rose-50/60 p-8 text-center">
               <p className="text-gray-700 font-medium">Nenhuma foto encontrada na galeria.</p>
               <p className="text-gray-500 text-sm mt-2">
-                Adicione imagens em <code>/public/gallery</code> para exibir aqui.
+                Envie fotos pela área admin para exibir aqui.
               </p>
             </div>
           )}

@@ -33,6 +33,17 @@ interface NewMember {
   name: string;
 }
 
+interface GalleryPhoto {
+  id: number;
+  title: string | null;
+  file_key: string;
+  file_url: string;
+  thumb_url: string;
+  mime_type: string;
+  size_bytes: number;
+  created_at: string;
+}
+
 interface AdminProps {
   onExit: () => void;
 }
@@ -167,6 +178,20 @@ export default function Admin({ onExit }: AdminProps) {
   const [inviteFamily, setInviteFamily] = useState<Family | null>(null);
   const inviteRef = useRef<HTMLDivElement | null>(null);
   const [downloadingInvite, setDownloadingInvite] = useState(false);
+  const [galleryPhotos, setGalleryPhotos] = useState<GalleryPhoto[]>([]);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [galleryTitle, setGalleryTitle] = useState('');
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [galleryUploadProgress, setGalleryUploadProgress] = useState({ uploaded: 0, total: 0 });
+
+  const getGalleryPhotoLabel = (photo: GalleryPhoto) => {
+    if (photo.title && photo.title.trim().length > 0) return photo.title.trim();
+    if (photo.file_key && photo.file_key.trim().length > 0) {
+      const parts = photo.file_key.split('/');
+      return parts[parts.length - 1] || `Foto #${photo.id}`;
+    }
+    return `Foto #${photo.id}`;
+  };
 
   const memberMap = useMemo(() => {
     return members.reduce<Record<string, FamilyMember[]>>((acc, member) => {
@@ -588,9 +613,11 @@ export default function Admin({ onExit }: AdminProps) {
 
     try {
       const data = await adminApi.getFamilies();
+      const galleryData = await adminApi.getGalleryPhotos();
       setFamilies(data.families || []);
       setMembers(data.members || []);
       setConfirmations(data.confirmations || []);
+      setGalleryPhotos(galleryData.photos || []);
     } catch (err) {
       setFormError('Erro ao carregar dados.');
       console.error('Error:', err);
@@ -603,10 +630,19 @@ export default function Admin({ onExit }: AdminProps) {
     let isMounted = true;
 
     const init = async () => {
-      const session = await adminApi.getSession();
-      if (!isMounted) return;
-      setSessionEmail(session?.email ?? null);
-      setAuthLoading(false);
+      try {
+        const session = await adminApi.getSession();
+        if (!isMounted) return;
+        setSessionEmail(session?.email ?? null);
+      } catch {
+        if (!isMounted) return;
+        adminApi.clearToken();
+        setSessionEmail(null);
+      } finally {
+        if (isMounted) {
+          setAuthLoading(false);
+        }
+      }
     };
 
     init();
@@ -733,6 +769,33 @@ export default function Admin({ onExit }: AdminProps) {
       console.error('Error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUploadGalleryPhoto = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (galleryFiles.length === 0) {
+      setFormError('Selecione pelo menos uma foto para upload na galeria.');
+      return;
+    }
+
+    setFormError('');
+    setGalleryUploading(true);
+    setGalleryUploadProgress({ uploaded: 0, total: galleryFiles.length });
+    try {
+      await adminApi.uploadGalleryPhoto(galleryFiles, galleryTitle, (uploaded, total) => {
+        setGalleryUploadProgress({ uploaded, total });
+      });
+      setGalleryFiles([]);
+      setGalleryTitle('');
+      setGalleryUploadProgress({ uploaded: 0, total: 0 });
+      await loadData();
+    } catch (err) {
+      console.error('Error uploading gallery photo:', err);
+      setFormError('Erro ao enviar foto para a galeria. Confira as variÃ¡veis do R2.');
+      setGalleryUploadProgress({ uploaded: 0, total: 0 });
+    } finally {
+      setGalleryUploading(false);
     }
   };
 
@@ -1006,6 +1069,79 @@ export default function Admin({ onExit }: AdminProps) {
                   <p className="mt-2 text-2xl font-semibold text-gray-700">
                     {stats.pending}
                   </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-rose-100/70 p-6 shadow-sm space-y-4">
+              <div>
+                <h2 className="text-2xl font-serif text-gray-800">Galeria (R2)</h2>
+                <p className="text-xs text-gray-500 mt-1">Total cadastradas: {galleryPhotos.length}</p>
+                  <p className="text-sm text-gray-500">Upload de uma ou várias fotos 4K com thumbnail automática.</p>
+              </div>
+
+              <form onSubmit={handleUploadGalleryPhoto} className="grid gap-3 md:grid-cols-[1fr,200px,140px]">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => setGalleryFiles(Array.from(e.target.files || []))}
+                  className="rounded-lg border border-gray-300 px-3 py-2"
+                />
+                <input
+                  type="text"
+                  value={galleryTitle}
+                  onChange={(e) => setGalleryTitle(e.target.value)}
+                  className="rounded-lg border border-gray-300 px-3 py-2"
+                  placeholder="TÃ­tulo opcional"
+                />
+                <button
+                  type="submit"
+                  disabled={galleryUploading}
+                  className="rounded-lg bg-rose-500 text-white font-semibold hover:bg-rose-600 disabled:opacity-60"
+                >
+                  {galleryUploading
+                    ? `Enviando... ${galleryUploadProgress.uploaded}/${galleryUploadProgress.total}`
+                    : 'Enviar fotos'}
+                </button>
+              </form>
+
+              <div className="max-h-[420px] overflow-y-auto pr-1">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {galleryPhotos.map((photo) => (
+                  <div key={photo.id} className="rounded-xl border border-gray-100 bg-white p-3">
+                    <img
+                      src={photo.thumb_url}
+                      alt={photo.title || `Foto ${photo.id}`}
+                      className="w-full h-36 object-cover rounded-lg"
+                      loading="lazy"
+                    />
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <p className="text-xs text-gray-600 truncate">{getGalleryPhotoLabel(photo)}</p>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!confirm('Remover esta foto da galeria?')) return;
+                          setLoading(true);
+                          try {
+                            await adminApi.deleteGalleryPhoto(photo.id);
+                            await loadData();
+                          } catch {
+                            setFormError('Erro ao remover foto da galeria.');
+                          } finally {
+                            setLoading(false);
+                          }
+                        }}
+                        className="text-xs text-rose-500 hover:text-rose-700"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                {galleryPhotos.length === 0 ? (
+                  <div className="text-sm text-gray-500">Nenhuma foto cadastrada no banco ainda.</div>
+                ) : null}
                 </div>
               </div>
             </div>
